@@ -93,8 +93,8 @@ public class PersonalAppLauncherWidgetProvider extends AppWidgetProvider
     }
     catch (NameNotFoundException exc)
     {
-      Log.d(TAG, "Application info not found for package: " + exc.getMessage());
-      views.setViewVisibility(viewId, View.GONE);
+      Log.i(TAG, "Application info not found for package: " + exc.getMessage());
+      views.setViewVisibility(viewId, View.INVISIBLE);
     }
 
   }
