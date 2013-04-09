@@ -23,10 +23,10 @@ public class AppPackageUpdateReceiver extends BroadcastReceiver
     {
       if (pkg.equals(data.getSchemeSpecificPart()))
       {
-        AppWidgetManager manger = AppWidgetManager.getInstance(context);
+        AppWidgetManager manager = AppWidgetManager.getInstance(context);
 
-        PersonalAppLauncherWidgetProvider.updateAppWidget(context, manger,
-            manger.getAppWidgetIds(new ComponentName(context, PersonalAppLauncherWidgetProvider.class)));
+        PersonalAppLauncherWidgetProvider.updateAppWidget(context, manager,
+            manager.getAppWidgetIds(new ComponentName(context, PersonalAppLauncherWidgetProvider.class)));
         break;
       }
     }
