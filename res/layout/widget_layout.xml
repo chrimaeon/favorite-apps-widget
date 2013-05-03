@@ -69,11 +69,11 @@
                 tools:ignore="ContentDescription" />
 
             <ImageButton
+                android:id="@+id/curriculumvitae"
                 style="@style/AppTheme.Button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:visibility="invisible"
                 tools:ignore="ContentDescription" />
         </LinearLayout>
     </LinearLayout>

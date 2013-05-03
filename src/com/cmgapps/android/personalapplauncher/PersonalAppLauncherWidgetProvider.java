@@ -23,9 +23,10 @@ public class PersonalAppLauncherWidgetProvider extends AppWidgetProvider
   private static final String NUMERALSCONVERTER_PACKAGE = "com.cmgapps.android.numeralsconverter";
   private static final String BIERDECKEL_PACKAGE = "com.cmgapps.android.bierdeckel";
   private static final String SUSHI_COUNTER = "com.cmgapps.android.sushicounter";
+  private static final String CV_PACKAGE = "com.cmgapps.android.curriculumvitae";
 
   public static final String[] PACKAGES = { PHONEWS_PACKAGE, PHONEWSPRO_PACKAGE, NUMERALSCONVERTER_PACKAGE,
-      BIERDECKEL_PACKAGE, SUSHI_COUNTER };
+      BIERDECKEL_PACKAGE, SUSHI_COUNTER, CV_PACKAGE };
 
   @Override
   public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds)
@@ -67,6 +68,7 @@ public class PersonalAppLauncherWidgetProvider extends AppWidgetProvider
         + ".NumeralsConverterActivity", views);
     initView(context, R.id.bierdeckel, BIERDECKEL_PACKAGE, BIERDECKEL_PACKAGE + ".ui.BierdeckelActivity", views);
     initView(context, R.id.sushicounter, SUSHI_COUNTER, SUSHI_COUNTER + ".activity.SushiActivity", views);
+    initView(context, R.id.curriculumvitae, CV_PACKAGE, CV_PACKAGE + ".activity.MainActivity", views);
     
     appWidgetManager.updateAppWidget(appWidgetIds, views);
   }
