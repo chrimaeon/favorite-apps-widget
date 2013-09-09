@@ -68,7 +68,7 @@ public class PersonalAppLauncherWidgetProvider extends AppWidgetProvider
         + ".NumeralsConverterActivity", views);
     initView(context, R.id.bierdeckel, BIERDECKEL_PACKAGE, BIERDECKEL_PACKAGE + ".ui.BierdeckelActivity", views);
     initView(context, R.id.sushicounter, SUSHI_COUNTER, SUSHI_COUNTER + ".activity.SushiActivity", views);
-    initView(context, R.id.curriculumvitae, CV_PACKAGE, CV_PACKAGE + ".activity.MainActivity", views);
+    initView(context, R.id.curriculumvitae, CV_PACKAGE, CV_PACKAGE + ".ui.MainActivity", views);
     
     appWidgetManager.updateAppWidget(appWidgetIds, views);
   }
