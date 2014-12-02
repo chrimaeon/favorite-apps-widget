@@ -62,7 +62,7 @@ public class PersonalAppLauncherWidgetProvider extends AppWidgetProvider
   {
     RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
-    initView(context, R.id.phonews, PHONEWS_PACKAGE, PHONEWS_PACKAGE + ".activity.Welcome", views);
+    initView(context, R.id.phonews, PHONEWS_PACKAGE, PHONEWS_PACKAGE + ".Welcome", views);
     initView(context, R.id.phonewspro, PHONEWSPRO_PACKAGE, PHONEWSPRO_PACKAGE + ".activity.Welcome", views);
     initView(context, R.id.numeralsconverter, NUMERALSCONVERTER_PACKAGE, NUMERALSCONVERTER_PACKAGE
         + ".NumeralsConverterActivity", views);
