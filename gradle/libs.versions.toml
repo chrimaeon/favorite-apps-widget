@@ -1,0 +1,14 @@
+[versions]
+
+gradle = "7.3.3"
+hilt = "2.40.5"
+kotlin = "1.6.10"
+
+[plugins]
+benManesVersionsGradle = "com.github.ben-manes.versions:0.41.0"
+
+
+[libraries]
+androidPluginDep = "com.android.tools.build:gradle:7.0.4"
+kotlinPluginDep = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+
