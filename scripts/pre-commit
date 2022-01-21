@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# ln -s -f ../../scripts/pre-commit .git/hooks/pre-commit
+
+set -e
+
+command -v ktlint >/dev/null 2>&1 || {
+  printf "ktlint not found.\nAborting.\n" 1>&2
+  exit 1
+}
+
+FILES=$(git diff --cached --name-only | grep -i -E "\.kts?" || true)
+
+if [ -n "$FILES" ]; then
+  ktlint "$FILES"
+else
+  echo "No file for ktlint"
+fi
