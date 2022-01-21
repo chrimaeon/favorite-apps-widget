@@ -8,6 +8,7 @@ composeCompiler = "1.1.0-rc02"
 
 [plugins]
 benManesVersionsGradle = "com.github.ben-manes.versions:0.41.0"
+ksp = "com.google.devtools.ksp:1.6.10-1.0.2"
 
 
 [libraries]
@@ -22,8 +23,10 @@ compose-material = { module = "androidx.compose.material:material", version.ref 
 compose-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose"}
 compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
 
-[bundles]
+ktlint = "com.pinterest:ktlint:0.43.2"
 
+
+[bundles]
 compose = [
     "compose-foundation",
     "compose-icons",
