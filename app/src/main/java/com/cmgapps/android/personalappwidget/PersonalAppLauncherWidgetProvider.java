@@ -62,17 +62,18 @@ public class PersonalAppLauncherWidgetProvider extends AppWidgetProvider {
     public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
-        initView(context, R.id.phonews, PHONEWS_PACKAGE, PHONEWS_PACKAGE + ".Welcome", views);
-        initView(context, R.id.phonewspro, PHONEWSPRO_PACKAGE, PHONEWSPRO_PACKAGE + ".activity.Welcome", views);
-        initView(context, R.id.numeralsconverter, NUMERALSCONVERTER_PACKAGE, NUMERALSCONVERTER_PACKAGE
-                + ".NumeralsConverterActivity", views);
-        initView(context, R.id.bierdeckel, BIERDECKEL_PACKAGE, BIERDECKEL_PACKAGE + ".ui.BierdeckelActivity", views);
-        initView(context, R.id.curriculumvitae, CV_PACKAGE, CV_PACKAGE + ".ui.MainActivity", views);
+//        initView(context, R.id.phonews, PHONEWS_PACKAGE, PHONEWS_PACKAGE + ".Welcome", views);
+//        initView(context, R.id.phonewspro, PHONEWSPRO_PACKAGE, PHONEWSPRO_PACKAGE + ".activity.Welcome", views);
+//        initView(context, R.id.numeralsconverter, NUMERALSCONVERTER_PACKAGE, NUMERALSCONVERTER_PACKAGE
+//                + ".NumeralsConverterActivity", views);
+//        initView(context, R.id.bierdeckel, BIERDECKEL_PACKAGE, BIERDECKEL_PACKAGE + ".ui.BierdeckelActivity", views);
+//        initView(context, R.id.curriculumvitae, CV_PACKAGE, CV_PACKAGE + ".ui.MainActivity", views);
 
         appWidgetManager.updateAppWidget(appWidgetIds, views);
     }
 
     private static void initView(Context context, int viewId, String pkg, String cls, RemoteViews views) {
+        Log.d(TAG, String.format("init view: %d, %s, %s", viewId, pkg, cls));
         try {
             ApplicationInfo info = context.getPackageManager().getApplicationInfo(pkg, 0);
 
@@ -81,12 +82,16 @@ public class PersonalAppLauncherWidgetProvider extends AppWidgetProvider {
             intent.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             intent.setComponent(new ComponentName(info.packageName, cls));
 
-            views.setOnClickPendingIntent(viewId, PendingIntent.getActivity(context, 0, intent, 0));
+            views.setOnClickPendingIntent(
+                    viewId,
+                    PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE)
+            );
 
             Drawable drawable = context.getPackageManager().getApplicationIcon(info);
 
-            if (drawable instanceof BitmapDrawable)
+            if (drawable instanceof BitmapDrawable) {
                 views.setBitmap(viewId, "setImageBitmap", ((BitmapDrawable) drawable).getBitmap());
+            }
 
             views.setViewVisibility(viewId, View.VISIBLE);
         } catch (NameNotFoundException exc) {

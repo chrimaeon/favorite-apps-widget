@@ -6,6 +6,8 @@
 
 plugins {
     id("com.android.application")
+    kotlin("android")
+    // id("com.google.devtools.ksp")
 }
 
 android {
@@ -18,7 +20,14 @@ android {
         targetSdk = 31
         versionCode = 1
         versionName = "1.0.0"
+    }
 
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
 
     buildTypes {
@@ -35,5 +44,6 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.bundles.compose)
+    implementation(libs.androidx.activity.compose)
 }

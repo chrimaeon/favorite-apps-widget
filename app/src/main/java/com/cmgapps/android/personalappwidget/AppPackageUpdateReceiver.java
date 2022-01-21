@@ -14,12 +14,20 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
+
 public class AppPackageUpdateReceiver extends BroadcastReceiver {
     private static final String TAG = "AppPackageUpdateReceiver";
+    public static final String ACTION_APP_ADDED = "com.cmgapps.android.personalappwidget.action.APP_ADDED";
 
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "onReceive " + intent);
+
+        if (intent.getAction().equals(ACTION_APP_ADDED)) {
+            // TODO handle app selection
+            Log.d(TAG, intent.getData().getSchemeSpecificPart());
+            return;
+        }
 
         Uri data = intent.getData();
 
