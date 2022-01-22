@@ -3,4 +3,16 @@
              android:layout_height="match_parent"
              android:padding="@dimen/widget_margin">
 
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <TextView
+        android:id="@+id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="No Apps Selected"/>
+
 </FrameLayout>

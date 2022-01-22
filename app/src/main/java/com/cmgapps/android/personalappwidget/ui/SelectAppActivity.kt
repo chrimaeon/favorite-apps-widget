@@ -4,12 +4,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.cmgapps.android.personalappwidget
+package com.cmgapps.android.personalappwidget.ui
 
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,6 +16,7 @@ import androidx.annotation.Px
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,9 +33,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.produceState
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,15 +46,28 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
+import com.cmgapps.android.personalappwidget.infra.db.AppDao
+import com.cmgapps.android.personalappwidget.infra.db.SelectedApp
+import com.cmgapps.android.personalappwidget.model.App
+import com.cmgapps.android.personalappwidget.widget.FavoriteAppWidgetProvider
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class SelectAppActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var appDao: AppDao
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MaterialTheme {
-                SelectAppScreen()
+                SelectAppScreen(appDao)
             }
         }
     }
@@ -64,7 +76,7 @@ class SelectAppActivity : ComponentActivity() {
 val DefaultIconSize = 40.dp
 
 @Composable
-private fun SelectAppScreen() {
+private fun SelectAppScreen(appDao: AppDao) {
     val context = LocalContext.current
     val pm: PackageManager = context.packageManager
 
@@ -72,38 +84,49 @@ private fun SelectAppScreen() {
         intent.addCategory(Intent.CATEGORY_LAUNCHER)
     }
 
-    val allAppsInfo = pm.queryIntentActivities(intent, 0).apply {
-        sortBy { it.loadLabel(pm).toString() }
+    val allAppsInfo: List<App> by produceState(emptyList(), pm) {
+        value = withContext(Dispatchers.IO) {
+            pm.queryIntentActivities(intent, 0)
+                .map {
+                    App(
+                        info = it,
+                        displayName = it.loadLabel(pm).toString(),
+                    )
+                }.sortedBy { it.displayName }
+        }
     }
 
     val imageSizePx = with(LocalDensity.current) { DefaultIconSize.roundToPx() }
 
-    val selectedApps = remember { mutableStateListOf<ResolveInfo>() }
+    val selectedApps by produceState<List<SelectedApp>>(emptyList(), appDao) {
+        appDao.getAll().collect {
+            value = it
+        }
+    }
+
+    val scope = rememberCoroutineScope()
 
     LazyColumn {
-        items(allAppsInfo) { info ->
-            val bitmap by loadIcon(pm, info, imageSizePx)
+        items(allAppsInfo) { app ->
+            val bitmap by loadIcon(pm, app.info, imageSizePx)
 
             Item(
-                appName = info.loadLabel(pm).toString(),
+                app = app,
                 icon = bitmap,
                 iconSize = DefaultIconSize,
-                selected = selectedApps.contains(info),
+                selected = selectedApps.find {
+                    it.packageName == app.packageName && it.activityName == app.activityName
+                } != null,
                 onSelectionChange = {
-                    if (it) {
-                        selectedApps += info
-                        context.sendBroadcast(
-                            Intent(context, AppPackageUpdateReceiver::class.java).also { intent ->
-                                intent.action = AppPackageUpdateReceiver.ACTION_APP_ADDED
-                                intent.data =
-                                    Uri.parse("package:${info.activityInfo.applicationInfo.packageName}")
-                            }
-                        )
-                    } else {
-                        selectedApps -= info
+                    scope.launch {
+                        if (it) {
+                            appDao.insert(SelectedApp(app.packageName, app.activityName))
+                        } else {
+                            appDao.delete(app.packageName)
+                        }
+                        FavoriteAppWidgetProvider.refreshWidgets(context)
                     }
                 }
-
             )
         }
     }
@@ -111,7 +134,7 @@ private fun SelectAppScreen() {
 
 @Composable
 private fun Item(
-    appName: String,
+    app: App,
     icon: ImageBitmap?,
     iconSize: Dp = DefaultIconSize,
     selected: Boolean,
@@ -132,7 +155,7 @@ private fun Item(
             Box(
                 modifier = Modifier.size(iconSize)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colors.secondary)
+                    .background(MaterialTheme.colors.background)
             )
         } else {
             Image(
@@ -142,13 +165,22 @@ private fun Item(
             )
         }
         Spacer(modifier = Modifier.width(16.dp))
-        Text(
+        Column(
             modifier = Modifier.weight(1f),
-            text = appName,
-            style = MaterialTheme.typography.h6,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+        ) {
+            Text(
+                text = app.displayName,
+                style = MaterialTheme.typography.subtitle1,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                text = app.packageName,
+                style = MaterialTheme.typography.caption,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
         Spacer(modifier = Modifier.width(16.dp))
         Checkbox(
             checked = selected,

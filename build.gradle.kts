@@ -19,6 +19,7 @@ buildscript {
     dependencies {
         classpath(libs.androidPluginDep)
         classpath(libs.kotlinPluginDep)
+        classpath(libs.hiltPluginDep)
     }
 }
 
@@ -42,6 +43,10 @@ allprojects {
 }
 
 tasks {
+    register("clean", Delete::class) {
+        delete(buildDir)
+    }
+
     named<Wrapper>("wrapper") {
         gradleVersion = libs.versions.gradle.get()
         distributionType = Wrapper.DistributionType.ALL
@@ -50,10 +55,10 @@ tasks {
     named<DependencyUpdatesTask>("dependencyUpdates") {
         revision = "release"
         rejectVersionIf {
-                listOf("alpha", "beta", "rc", "cr", "m", "eap").any { qualifier ->
-                    """(?i).*[.-]?$qualifier[.\d-]*""".toRegex()
-                        .containsMatchIn(candidate.version)
-                }
+            listOf("alpha", "beta", "rc", "cr", "m", "eap").any { qualifier ->
+                """(?i).*[.-]?$qualifier[.\d-]*""".toRegex()
+                    .containsMatchIn(candidate.version)
+            }
         }
         gradleReleaseChannel = CURRENT.id
     }

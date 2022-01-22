@@ -15,12 +15,13 @@
         tools:ignore="QueryAllPackagesPermission"/>
 
     <application
+        android:name=".Application"
         android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".SelectAppActivity"
+            android:name=".ui.SelectAppActivity"
             android:exported="true">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -28,8 +29,13 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name=".widget.FavoriteAppViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="false"/>
+
         <receiver
-            android:name=".PersonalAppLauncherWidgetProvider"
+            android:name=".widget.FavoriteAppWidgetProvider"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
@@ -37,16 +43,15 @@
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/personalapplauncher_appwidget_info"/>
+                android:resource="@xml/favorite_app_appwidget_info"/>
         </receiver>
         <receiver
-            android:name=".AppPackageUpdateReceiver"
+            android:name=".widget.AppPackageUpdateReceiver"
             android:exported="false"
             android:enabled="false">
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED"/>
                 <action android:name="android.intent.action.PACKAGE_REMOVED"/>
-                <action android:name="com.cmgapps.android.personalappwidget.action.APP_ADDED" />
 
                 <data android:scheme="package"/>
             </intent-filter>

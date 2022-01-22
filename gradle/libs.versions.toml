@@ -1,21 +1,25 @@
 [versions]
-
 gradle = "7.3.3"
 hilt = "2.40.5"
 kotlin = "1.6.10"
 compose = "1.1.0-rc01"
 composeCompiler = "1.1.0-rc02"
+room = "2.4.1"
+dagger = "2.40.5"
+logtag = "1.1.0"
 
 [plugins]
 benManesVersionsGradle = "com.github.ben-manes.versions:0.41.0"
 ksp = "com.google.devtools.ksp:1.6.10-1.0.2"
 
-
 [libraries]
 androidPluginDep = "com.android.tools.build:gradle:7.0.4"
 kotlinPluginDep = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+hiltPluginDep = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "dagger" }
 
 androidx-activity-compose = "androidx.activity:activity-compose:1.4.0"
+
+kotlinx-coroutines =  "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0"
 
 compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose"}
 compose-icons = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose"}
@@ -25,6 +29,15 @@ compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
 
 ktlint = "com.pinterest:ktlint:0.43.2"
 
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
+hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "dagger" }
+
+logtag-lib = { module= "com.cmgapps.logtag:log-tag", version.ref = "logtag" }
+logtag-processor = { module = "com.cmgapps.logtag:processor", version.ref = "logtag" }
 
 [bundles]
 compose = [

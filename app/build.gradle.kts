@@ -5,10 +5,13 @@
  */
 
 plugins {
+    idea
     id("com.android.application")
     kotlin("android")
+    kotlin("kapt")
+    alias(libs.plugins.ksp)
+    id("dagger.hilt.android.plugin")
     id("com.cmgapps.gradle.ktlint")
-
 }
 
 android {
@@ -42,9 +45,31 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
+    applicationVariants.all {
+        val variantName = name
+        sourceSets {
+            named("main") {
+                java.srcDir(buildDir.resolve("generated").resolve("ksp").resolve(variantName).resolve("kotlin"))
+            }
+        }
+    }
+}
+
+ksp {
+    arg("room.schemaLocation", projectDir.resolve("schema").absolutePath)
 }
 
 dependencies {
     implementation(libs.bundles.compose)
     implementation(libs.androidx.activity.compose)
+
+    implementation(libs.logtag.lib)
+    ksp(libs.logtag.processor)
+
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
 }
