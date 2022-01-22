@@ -16,6 +16,8 @@ import android.widget.RemoteViewsService
 import androidx.core.graphics.drawable.toBitmap
 import com.cmgapps.android.personalappwidget.R
 import com.cmgapps.android.personalappwidget.infra.db.AppDao
+import com.cmgapps.android.personalappwidget.widget.FavoriteAppWidgetProvider.Companion.EXTRA_ACTIVITY_NAME
+import com.cmgapps.android.personalappwidget.widget.FavoriteAppWidgetProvider.Companion.EXTRA_PACKAGE_NAME
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -65,6 +67,12 @@ private class ListRemoteViewFactory(private val context: Context, private val ap
         remoteViews.setImageViewBitmap(
             R.id.icon, info.loadIcon(packageManager).toBitmap(width = iconSize, height = iconSize)
         )
+
+        val intent = Intent().also {
+            it.putExtra(EXTRA_PACKAGE_NAME, info.activityInfo.applicationInfo.packageName)
+            it.putExtra(EXTRA_ACTIVITY_NAME, info.activityInfo.name)
+        }
+        remoteViews.setOnClickFillInIntent(R.id.widget_item, intent)
         return remoteViews
     }
 
@@ -72,9 +80,8 @@ private class ListRemoteViewFactory(private val context: Context, private val ap
 
     override fun getViewTypeCount() = 1
 
-    override fun getItemId(position: Int): Long {
-        return appInfos[position].activityInfo.applicationInfo.packageName.hashCode().toLong()
-    }
+    override fun getItemId(position: Int): Long =
+        appInfos[position].activityInfo.applicationInfo.packageName.hashCode().toLong()
 
     override fun hasStableIds(): Boolean = true
 }
