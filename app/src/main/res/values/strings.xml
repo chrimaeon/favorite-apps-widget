@@ -2,5 +2,7 @@
 <resources>
 
     <string name="app_name">Personal App Launcher</string>
+    <string name="title_select_app_title">Select Apps</string>
+    <string name="refrrsh_widget">Refresh Widget</string>
 
 </resources>

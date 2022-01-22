@@ -28,9 +28,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Checkbox
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.State
@@ -44,10 +50,12 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
+import com.cmgapps.android.personalappwidget.R
 import com.cmgapps.android.personalappwidget.infra.db.AppDao
 import com.cmgapps.android.personalappwidget.infra.db.SelectedApp
 import com.cmgapps.android.personalappwidget.model.App
@@ -69,7 +77,31 @@ class SelectAppActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Theme {
-                SelectAppScreen(appDao)
+                Scaffold(
+                    topBar = {
+                        TopAppBar(
+                            title = {
+                                Text(
+                                    text = stringResource(R.string.title_select_app_title)
+                                )
+                            },
+                            actions = {
+                                IconButton(
+                                    onClick = {
+                                        FavoriteAppWidgetProvider.refreshWidgets(this@SelectAppActivity)
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Refresh,
+                                        contentDescription = stringResource(R.string.refrrsh_widget)
+                                    )
+                                }
+                            }
+                        )
+                    }
+                ) {
+                    SelectAppScreen(appDao)
+                }
             }
         }
     }
@@ -210,4 +242,3 @@ private fun loadIcon(
         }
     }
 }
-

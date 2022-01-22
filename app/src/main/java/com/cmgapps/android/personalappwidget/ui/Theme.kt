@@ -18,12 +18,16 @@ private val colorHeliotrope = Color(0xFFE823FC)
 
 val DarkColors = darkColors(
     primary = colorAmber,
-    secondary = colorHeliotrope
+    secondary = colorHeliotrope,
+    onPrimary = Color.Black,
+    onSecondary = Color.Black
 )
 
 val LightColors = lightColors(
     primary = colorAmber,
-    secondary = colorHeliotrope
+    secondary = colorHeliotrope,
+    onPrimary = Color.Black,
+    onSecondary = Color.Black
 )
 
 @Composable

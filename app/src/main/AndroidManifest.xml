@@ -48,7 +48,7 @@
         </receiver>
         <receiver
             android:name=".widget.AppPackageUpdateReceiver"
-            android:exported="false"
+            android:exported="true"
             android:enabled="false">
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED"/>

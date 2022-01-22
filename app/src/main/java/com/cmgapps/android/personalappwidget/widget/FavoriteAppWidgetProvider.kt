@@ -8,6 +8,7 @@ package com.cmgapps.android.personalappwidget.widget
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -45,17 +46,22 @@ class FavoriteAppWidgetProvider : AppWidgetProvider() {
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == ACTION_OPEN_APP) {
-            Log.d(LOG_TAG, "action open")
 
-            intent.extras?.let {
-                val packageName = it.getString(EXTRA_PACKAGE_NAME) ?: error("EXTRA_PACKAGE_NAME not set")
-                val activityName = it.getString(EXTRA_ACTIVITY_NAME) ?: error("EXTRA_ACTIVITY_NAME not set")
-                context.startActivity(
-                    Intent().also {
-                        it.component = ComponentName(packageName, activityName)
-                        it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    }
-                )
+            intent.extras?.let { extras ->
+                val packageName = extras.getString(EXTRA_PACKAGE_NAME) ?: return
+                val activityName = extras.getString(EXTRA_ACTIVITY_NAME) ?: return
+
+                val startActivitIntent = Intent().also { intent ->
+                    intent.component = ComponentName(packageName, activityName)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+
+                try {
+                    context.startActivity(startActivitIntent)
+                } catch (exc: ActivityNotFoundException) {
+                    Log.e(LOG_TAG, "Activity not found for intent: $startActivitIntent")
+                }
+
             }
 
             return
