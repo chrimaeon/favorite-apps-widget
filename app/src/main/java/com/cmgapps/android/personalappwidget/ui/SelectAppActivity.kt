@@ -28,9 +28,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Checkbox
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
@@ -66,7 +68,7 @@ class SelectAppActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme {
+            Theme {
                 SelectAppScreen(appDao)
             }
         }
@@ -77,6 +79,7 @@ val DefaultIconSize = 40.dp
 
 @Composable
 private fun SelectAppScreen(appDao: AppDao) {
+
     val context = LocalContext.current
     val pm: PackageManager = context.packageManager
 
@@ -140,52 +143,57 @@ private fun Item(
     selected: Boolean,
     onSelectionChange: (Boolean) -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp)
-            .toggleable(
-                value = selected,
-                onValueChange = onSelectionChange
-            ),
-        verticalAlignment = Alignment.CenterVertically
+    CompositionLocalProvider(
+        LocalContentColor provides MaterialTheme.colors.onSurface
     ) {
-        Spacer(Modifier.width(8.dp))
-        if (icon == null) {
-            Box(
-                modifier = Modifier.size(iconSize)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colors.background)
-            )
-        } else {
-            Image(
-                modifier = Modifier.size(iconSize),
-                bitmap = icon,
-                contentDescription = null
-            )
-        }
-        Spacer(modifier = Modifier.width(16.dp))
-        Column(
-            modifier = Modifier.weight(1f),
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .toggleable(
+                    value = selected,
+                    onValueChange = onSelectionChange
+                )
+                .background(MaterialTheme.colors.surface),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = app.displayName,
-                style = MaterialTheme.typography.subtitle1,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                text = app.packageName,
-                style = MaterialTheme.typography.caption,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+            Spacer(Modifier.width(8.dp))
+            if (icon == null) {
+                Box(
+                    modifier = Modifier.size(iconSize)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colors.background)
+                )
+            } else {
+                Image(
+                    modifier = Modifier.size(iconSize),
+                    bitmap = icon,
+                    contentDescription = null
+                )
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(
+                modifier = Modifier.weight(1f),
+            ) {
+                Text(
+                    text = app.displayName,
+                    style = MaterialTheme.typography.subtitle1,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = app.packageName,
+                    style = MaterialTheme.typography.caption,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Checkbox(
+                checked = selected,
+                onCheckedChange = onSelectionChange
             )
         }
-        Spacer(modifier = Modifier.width(16.dp))
-        Checkbox(
-            checked = selected,
-            onCheckedChange = onSelectionChange
-        )
     }
 }
 
