@@ -38,20 +38,15 @@ android {
         debug {
             isMinifyEnabled = false
         }
+
+        release {
+            isMinifyEnabled = false
+        }
     }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-    }
-
-    applicationVariants.all {
-        val variantName = name
-        sourceSets {
-            named("main") {
-                java.srcDir(buildDir.resolve("generated").resolve("ksp").resolve(variantName).resolve("kotlin"))
-            }
-        }
     }
 }
 
