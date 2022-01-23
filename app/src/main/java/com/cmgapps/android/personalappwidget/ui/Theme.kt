@@ -13,19 +13,27 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-private val colorAmber = Color(0xFFFFC107)
-private val colorHeliotrope = Color(0xFFE823FC)
+private val amber = Color(0xFFFFC107)
+private val amberVariantDark = Color(0xFFC79100)
+private val amberVariantLight = Color(0xFFFFF350)
+private val deepPurple = Color(0xFF9575CD)
+private val deepPurpleVariantDark = Color(0xFF65499C)
+private val deepPurpleVariantLight = Color(0xFFC7A4FF)
 
 val DarkColors = darkColors(
-    primary = colorAmber,
-    secondary = colorHeliotrope,
+    primary = amberVariantLight,
+    primaryVariant = amber,
+    secondary = deepPurpleVariantLight,
+    secondaryVariant = deepPurpleVariantLight,
     onPrimary = Color.Black,
     onSecondary = Color.Black
 )
 
 val LightColors = lightColors(
-    primary = colorAmber,
-    secondary = colorHeliotrope,
+    primary = amber,
+    primaryVariant = amberVariantDark,
+    secondary = deepPurple,
+    secondaryVariant = deepPurpleVariantDark,
     onPrimary = Color.Black,
     onSecondary = Color.Black
 )
