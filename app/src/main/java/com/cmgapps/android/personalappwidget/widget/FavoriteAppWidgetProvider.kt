@@ -61,7 +61,6 @@ class FavoriteAppWidgetProvider : AppWidgetProvider() {
                 } catch (exc: ActivityNotFoundException) {
                     Log.e(LOG_TAG, "Activity not found for intent: $startActivitIntent")
                 }
-
             }
 
             return
@@ -70,7 +69,11 @@ class FavoriteAppWidgetProvider : AppWidgetProvider() {
         super.onReceive(context, intent)
     }
 
-    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+    override fun onUpdate(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray
+    ) {
         if (BuildConfig.DEBUG) {
             Log.d(LOG_TAG, "onUpdate")
         }
@@ -94,11 +97,12 @@ class FavoriteAppWidgetProvider : AppWidgetProvider() {
 
         remoteViews.setEmptyView(R.id.list, R.id.empty)
 
-        val flag = PendingIntent.FLAG_UPDATE_CURRENT or if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.FLAG_MUTABLE
-        } else {
-            0
-        }
+        val flag =
+            PendingIntent.FLAG_UPDATE_CURRENT or if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.FLAG_MUTABLE
+            } else {
+                0
+            }
 
         remoteViews.setPendingIntentTemplate(
             R.id.list,

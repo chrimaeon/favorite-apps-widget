@@ -25,7 +25,8 @@ import javax.inject.Inject
 class FavoriteAppViewsService : RemoteViewsService() {
     @Inject
     lateinit var appDao: AppDao
-    override fun onGetViewFactory(intent: Intent): RemoteViewsFactory = ListRemoteViewFactory(this, appDao)
+    override fun onGetViewFactory(intent: Intent): RemoteViewsFactory =
+        ListRemoteViewFactory(this, appDao)
 }
 
 private class ListRemoteViewFactory(private val context: Context, private val appDao: AppDao) :
@@ -53,7 +54,8 @@ private class ListRemoteViewFactory(private val context: Context, private val ap
                 Intent(Intent.ACTION_MAIN).also {
                     it.addCategory(Intent.CATEGORY_LAUNCHER)
                     it.component = ComponentName(selectedApp.packageName, selectedApp.activityName)
-                }, PackageManager.MATCH_DEFAULT_ONLY
+                },
+                PackageManager.MATCH_DEFAULT_ONLY
             )?.let {
                 appInfos.add(it)
             }
