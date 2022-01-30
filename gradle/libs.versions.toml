@@ -13,7 +13,7 @@ benManesVersionsGradle = "com.github.ben-manes.versions:0.41.0"
 ksp = "com.google.devtools.ksp:1.6.10-1.0.2"
 
 [libraries]
-androidPluginDep = "com.android.tools.build:gradle:7.0.4"
+androidPluginDep = "com.android.tools.build:gradle:7.1.0"
 kotlinPluginDep = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 hiltPluginDep = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "dagger" }
 
