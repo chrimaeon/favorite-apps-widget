@@ -12,7 +12,6 @@ import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -27,46 +26,25 @@ class FavoriteAppWidgetProvider : AppWidgetProvider() {
         if (BuildConfig.DEBUG) {
             Log.d(LOG_TAG, "onEnabled")
         }
-
-        context.packageManager.setComponentEnabledSetting(
-            ComponentName(context, AppPackageUpdateReceiver::class.java),
-            PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP
-        )
     }
 
     override fun onDisabled(context: Context) {
         if (BuildConfig.DEBUG) {
             Log.d(LOG_TAG, "onDisabled")
         }
-        context.packageManager.setComponentEnabledSetting(
-            ComponentName(context, AppPackageUpdateReceiver::class.java),
-            PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP
-        )
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action == ACTION_OPEN_APP) {
-
-            intent.extras?.let { extras ->
-                val packageName = extras.getString(EXTRA_PACKAGE_NAME) ?: return
-                val activityName = extras.getString(EXTRA_ACTIVITY_NAME) ?: return
-
-                val startActivitIntent = Intent().also { intent ->
-                    intent.component = ComponentName(packageName, activityName)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }
-
-                try {
-                    context.startActivity(startActivitIntent)
-                } catch (exc: ActivityNotFoundException) {
-                    Log.e(LOG_TAG, "Activity not found for intent: $startActivitIntent")
+        when (intent.action) {
+            ACTION_OPEN_APP -> intent.extras?.let { extras ->
+                val packageName = extras.getString(EXTRA_PACKAGE_NAME)
+                val activityName = extras.getString(EXTRA_ACTIVITY_NAME)
+                if (packageName != null && activityName != null) {
+                    onOpenApp(context, packageName, activityName)
                 }
             }
-
-            return
+            else -> super.onReceive(context, intent)
         }
-
-        super.onReceive(context, intent)
     }
 
     override fun onUpdate(
@@ -118,6 +96,19 @@ class FavoriteAppWidgetProvider : AppWidgetProvider() {
         return remoteViews
     }
 
+    private fun onOpenApp(context: Context, packageName: String, activityName: String) {
+        val startActivityIntent = Intent().also { intent ->
+            intent.component = ComponentName(packageName, activityName)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+
+        try {
+            context.startActivity(startActivityIntent)
+        } catch (exc: ActivityNotFoundException) {
+            Log.e(LOG_TAG, "Activity not found for intent: $startActivityIntent")
+        }
+    }
+
     companion object {
 
         const val ACTION_OPEN_APP = BuildConfig.APPLICATION_ID + ".action.ACTION_OPEN_APP"
@@ -126,6 +117,7 @@ class FavoriteAppWidgetProvider : AppWidgetProvider() {
 
         @JvmStatic
         fun refreshWidgets(context: Context) {
+            Log.i("FavoriteAppWidgetProvider", "refreshing favorite app widgets")
             val appWidgetManager = AppWidgetManager.getInstance(context)
             appWidgetManager.notifyAppWidgetViewDataChanged(
                 appWidgetManager.getAppWidgetIds(

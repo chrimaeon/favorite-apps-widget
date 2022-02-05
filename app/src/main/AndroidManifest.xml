@@ -46,17 +46,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/favorite_app_appwidget_info"/>
         </receiver>
-        <receiver
-            android:name=".widget.AppPackageUpdateReceiver"
-            android:exported="true"
-            android:enabled="false">
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_ADDED"/>
-                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
-
-                <data android:scheme="package"/>
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

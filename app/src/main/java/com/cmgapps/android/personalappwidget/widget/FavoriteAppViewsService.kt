@@ -32,11 +32,11 @@ class FavoriteAppViewsService : RemoteViewsService() {
 private class ListRemoteViewFactory(private val context: Context, private val appDao: AppDao) :
     RemoteViewsService.RemoteViewsFactory {
     private val packageManager = context.packageManager
-    private var appInfos: MutableList<ResolveInfo> = mutableListOf()
+    private var appInfos = mutableListOf<FavoriteApp>()
     private val iconSize = context.resources.getDimensionPixelSize(R.dimen.icon_size)
 
     override fun onCreate() {
-        // Since we reload the cursor in onDataSetChanged() which gets called immediately after
+        // Since we reload the data in onDataSetChanged() which gets called immediately after
         // onCreate(), we do nothing here.
     }
 
@@ -57,7 +57,7 @@ private class ListRemoteViewFactory(private val context: Context, private val ap
                 },
                 PackageManager.MATCH_DEFAULT_ONLY
             )?.let {
-                appInfos.add(it)
+                appInfos.add(FavoriteApp(selectedApp.packageName, it))
             }
         }
     }
@@ -65,14 +65,15 @@ private class ListRemoteViewFactory(private val context: Context, private val ap
     override fun getViewAt(position: Int): RemoteViews {
         val info = appInfos[position]
         val remoteViews = RemoteViews(context.packageName, R.layout.widget_item)
-        remoteViews.setTextViewText(R.id.text, info.loadLabel(packageManager))
+        remoteViews.setTextViewText(R.id.text, info.resolveInfo.loadLabel(packageManager))
         remoteViews.setImageViewBitmap(
-            R.id.icon, info.loadIcon(packageManager).toBitmap(width = iconSize, height = iconSize)
+            R.id.icon,
+            info.resolveInfo.loadIcon(packageManager).toBitmap(width = iconSize, height = iconSize)
         )
 
         val intent = Intent().also {
-            it.putExtra(EXTRA_PACKAGE_NAME, info.activityInfo.applicationInfo.packageName)
-            it.putExtra(EXTRA_ACTIVITY_NAME, info.activityInfo.name)
+            it.putExtra(EXTRA_PACKAGE_NAME, info.packageName)
+            it.putExtra(EXTRA_ACTIVITY_NAME, info.resolveInfo.activityInfo.name)
         }
         remoteViews.setOnClickFillInIntent(R.id.widget_item, intent)
         return remoteViews
@@ -83,7 +84,17 @@ private class ListRemoteViewFactory(private val context: Context, private val ap
     override fun getViewTypeCount() = 1
 
     override fun getItemId(position: Int): Long =
-        appInfos[position].activityInfo.applicationInfo.packageName.hashCode().toLong()
+        appInfos[position].itemId
 
     override fun hasStableIds(): Boolean = true
+}
+
+private data class FavoriteApp(val packageName: String, val resolveInfo: ResolveInfo) {
+    val itemId: Long by lazy {
+        var id: Long = 0
+        packageName.forEach {
+            id *= 31 + it.code
+        }
+        id
+    }
 }
