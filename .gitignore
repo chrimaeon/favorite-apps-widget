@@ -5,6 +5,6 @@ local.properties
 !.idea/codeStyles/
 !.idea/copyright/
 !.idea/.name
+!.idea/icon*.png
 .DS_Store
 build/
-
