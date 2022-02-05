@@ -2,18 +2,17 @@
 gradle = "7.3.3"
 hilt = "2.40.5"
 kotlin = "1.6.10"
-compose = "1.1.0-rc01"
-composeCompiler = "1.1.0-rc02"
+compose = "1.1.0-rc03"
 room = "2.4.1"
 dagger = "2.40.5"
 logtag = "1.1.0"
 
 [plugins]
-benManesVersionsGradle = "com.github.ben-manes.versions:0.41.0"
+benManesVersionsGradle = "com.github.ben-manes.versions:0.42.0"
 ksp = "com.google.devtools.ksp:1.6.10-1.0.2"
+android-application = "com.android.application:7.1.1"
 
 [libraries]
-androidPluginDep = "com.android.tools.build:gradle:7.1.0"
 kotlinPluginDep = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 hiltPluginDep = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "dagger" }
 

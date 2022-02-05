@@ -5,7 +5,6 @@
  */
 
 plugins {
-    idea
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
@@ -31,7 +30,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
+        kotlinCompilerExtensionVersion = libs.versions.compose.get()
     }
 
     buildTypes {

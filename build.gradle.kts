@@ -17,13 +17,13 @@ buildscript {
     }
 
     dependencies {
-        classpath(libs.androidPluginDep)
         classpath(libs.kotlinPluginDep)
         classpath(libs.hiltPluginDep)
     }
 }
 
 plugins {
+    alias(libs.plugins.android.application) apply false
     alias(libs.plugins.benManesVersionsGradle)
 }
 
