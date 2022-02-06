@@ -56,6 +56,7 @@ ksp {
 dependencies {
     implementation(libs.bundles.compose)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.glance.appwidget)
 
     implementation(libs.logtag.lib)
     ksp(libs.logtag.processor)

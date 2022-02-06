@@ -6,6 +6,5 @@
     android:targetCellWidth="2"
     android:targetCellHeight="3"
     android:maxResizeHeight="300dp"
-    android:resizeMode="vertical"
-
-    />
+    android:resizeMode="vertical|horizontal"
+    android:widgetCategory="home_screen" />

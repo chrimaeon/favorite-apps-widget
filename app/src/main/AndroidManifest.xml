@@ -36,7 +36,7 @@
             android:exported="false"/>
 
         <receiver
-            android:name=".widget.FavoriteAppWidgetProvider"
+            android:name=".widget.FavoriteAppWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>

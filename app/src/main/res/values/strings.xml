@@ -5,5 +5,6 @@
     <string name="title_select_app_title">Select Apps</string>
     <string name="refrrsh_widget">Refresh Widget</string>
     <string name="list_empty">No Apps Selected</string>
+    <string name="widget_loading">Loading …</string>
 
 </resources>

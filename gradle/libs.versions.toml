@@ -26,6 +26,8 @@ compose-material = { module = "androidx.compose.material:material", version.ref 
 compose-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose"}
 compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
 
+glance-appwidget = "androidx.glance:glance-appwidget:1.0.0-alpha02"
+
 ktlint = "com.pinterest:ktlint:0.43.2"
 
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }

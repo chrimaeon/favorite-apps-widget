@@ -59,7 +59,7 @@ import com.cmgapps.android.personalappwidget.R
 import com.cmgapps.android.personalappwidget.infra.db.AppDao
 import com.cmgapps.android.personalappwidget.infra.db.SelectedApp
 import com.cmgapps.android.personalappwidget.model.App
-import com.cmgapps.android.personalappwidget.widget.FavoriteAppWidgetProvider
+import com.cmgapps.android.personalappwidget.widget.FavoriteAppWidgetReceiver
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -88,7 +88,7 @@ class SelectAppActivity : ComponentActivity() {
                             actions = {
                                 IconButton(
                                     onClick = {
-                                        FavoriteAppWidgetProvider.refreshWidgets(this@SelectAppActivity)
+                                        FavoriteAppWidgetReceiver.sendAppsUpdatedBroadcast(this@SelectAppActivity)
                                     }
                                 ) {
                                     Icon(
@@ -159,7 +159,7 @@ private fun SelectAppScreen(appDao: AppDao) {
                         } else {
                             appDao.delete(app.packageName)
                         }
-                        FavoriteAppWidgetProvider.refreshWidgets(context)
+                        FavoriteAppWidgetReceiver.sendAppsUpdatedBroadcast(context)
                     }
                 }
             )
@@ -192,7 +192,8 @@ private fun Item(
             Spacer(Modifier.width(8.dp))
             if (icon == null) {
                 Box(
-                    modifier = Modifier.size(iconSize)
+                    modifier = Modifier
+                        .size(iconSize)
                         .clip(CircleShape)
                         .background(MaterialTheme.colors.background)
                 )
