@@ -24,7 +24,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Personal-App-Widget"
+rootProject.name = "Favorite-Apps-Widget"
 include(
     ":app",
 )
