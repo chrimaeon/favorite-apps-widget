@@ -93,7 +93,7 @@ class SelectAppActivity : ComponentActivity() {
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Refresh,
-                                        contentDescription = stringResource(R.string.refrrsh_widget),
+                                        contentDescription = stringResource(R.string.refresh_widget),
                                     )
                                 }
                             },
