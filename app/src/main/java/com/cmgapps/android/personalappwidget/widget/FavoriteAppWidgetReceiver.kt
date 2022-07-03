@@ -52,7 +52,7 @@ class FavoriteAppWidget : GlanceAppWidget() {
         val appContext = LocalContext.current.applicationContext
         val appDao = EntryPoints.get(
             appContext,
-            FavoriteAppWidgetInterface::class.java
+            FavoriteAppWidgetInterface::class.java,
         ).getAppDao()
 
         val packageManager = appContext.packageManager
@@ -76,20 +76,20 @@ class FavoriteAppWidget : GlanceAppWidget() {
                 val resolveInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     packageManager.resolveActivity(
                         intent,
-                        PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_DEFAULT_ONLY.toLong())
+                        PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_DEFAULT_ONLY.toLong()),
                     )
                 } else {
                     @Suppress("DEPRECATION")
                     packageManager.resolveActivity(
                         intent,
-                        PackageManager.MATCH_DEFAULT_ONLY
+                        PackageManager.MATCH_DEFAULT_ONLY,
                     )
                 }
 
                 FavoriteApp(
                     packageName = selectedApp.packageName,
                     selectedApp.activityName,
-                    resolveInfo
+                    resolveInfo,
                 )
             }.filter { it.resolveInfo != null }
             val lastIndex = favApps.lastIndex
@@ -100,22 +100,22 @@ class FavoriteAppWidget : GlanceAppWidget() {
                         actionStartActivity(
                             ComponentName(
                                 favoriteApp.packageName,
-                                favoriteApp.activityName
-                            )
-                        )
+                                favoriteApp.activityName,
+                            ),
+                        ),
                     ),
-                    verticalAlignment = Alignment.Vertical.CenterVertically
+                    verticalAlignment = Alignment.Vertical.CenterVertically,
                 ) {
                     Image(
                         provider = ImageProvider(
-                            resolveInfo.loadIcon(packageManager).toBitmap(iconSize, iconSize)
+                            resolveInfo.loadIcon(packageManager).toBitmap(iconSize, iconSize),
                         ),
                         contentDescription = null,
                     )
                     Spacer(GlanceModifier.width(8.dp))
                     Text(
                         resolveInfo.loadLabel(packageManager).toString(),
-                        maxLines = 2
+                        maxLines = 2,
                     )
                 }
                 if (index != lastIndex) {
@@ -151,7 +151,7 @@ class FavoriteAppWidgetReceiver : GlanceAppWidgetReceiver() {
                 onUpdate(
                     context,
                     appWidgetManager,
-                    appWidgetManager.getAppWidgetIds(componentName)
+                    appWidgetManager.getAppWidgetIds(componentName),
                 )
             }
             else -> super.onReceive(context, intent)
@@ -166,7 +166,7 @@ class FavoriteAppWidgetReceiver : GlanceAppWidgetReceiver() {
             context.sendBroadcast(
                 Intent(context, FavoriteAppWidgetReceiver::class.java).also {
                     it.action = ACTION_APPS_UPDATED
-                }
+                },
             )
         }
     }

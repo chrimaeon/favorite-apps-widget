@@ -82,23 +82,23 @@ class SelectAppActivity : ComponentActivity() {
                         TopAppBar(
                             title = {
                                 Text(
-                                    text = stringResource(R.string.title_select_app_title)
+                                    text = stringResource(R.string.title_select_app_title),
                                 )
                             },
                             actions = {
                                 IconButton(
                                     onClick = {
                                         FavoriteAppWidgetReceiver.sendAppsUpdatedBroadcast(this@SelectAppActivity)
-                                    }
+                                    },
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Refresh,
-                                        contentDescription = stringResource(R.string.refrrsh_widget)
+                                        contentDescription = stringResource(R.string.refrrsh_widget),
                                     )
                                 }
-                            }
+                            },
                         )
-                    }
+                    },
                 ) {
                     SelectAppScreen(appDao)
                 }
@@ -164,7 +164,7 @@ private fun SelectAppScreen(appDao: AppDao) {
                         }
                         FavoriteAppWidgetReceiver.sendAppsUpdatedBroadcast(context)
                     }
-                }
+                },
             )
         }
     }
@@ -179,7 +179,7 @@ private fun Item(
     onSelectionChange: (Boolean) -> Unit,
 ) {
     CompositionLocalProvider(
-        LocalContentColor provides MaterialTheme.colors.onSurface
+        LocalContentColor provides MaterialTheme.colors.onSurface,
     ) {
         Row(
             modifier = Modifier
@@ -187,10 +187,10 @@ private fun Item(
                 .height(56.dp)
                 .toggleable(
                     value = selected,
-                    onValueChange = onSelectionChange
+                    onValueChange = onSelectionChange,
                 )
                 .background(MaterialTheme.colors.surface),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Spacer(Modifier.width(8.dp))
             if (icon == null) {
@@ -198,13 +198,13 @@ private fun Item(
                     modifier = Modifier
                         .size(iconSize)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colors.background)
+                        .background(MaterialTheme.colors.background),
                 )
             } else {
                 Image(
                     modifier = Modifier.size(iconSize),
                     bitmap = icon,
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
             Spacer(modifier = Modifier.width(16.dp))
@@ -215,19 +215,19 @@ private fun Item(
                     text = app.displayName,
                     style = MaterialTheme.typography.subtitle1,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
                 Text(
                     text = app.packageName,
                     style = MaterialTheme.typography.caption,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
             Spacer(modifier = Modifier.width(16.dp))
             Checkbox(
                 checked = selected,
-                onCheckedChange = onSelectionChange
+                onCheckedChange = onSelectionChange,
             )
         }
     }

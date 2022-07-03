@@ -16,5 +16,5 @@ data class SelectedApp(
     @ColumnInfo(name = Database.SELECTED_APP_TABLE_PACKAGE_NAME_COLUMN)
     val packageName: String,
     @ColumnInfo(name = Database.SELECTED_APP_TABLE_ACTIVITY_NAME_COLUMN)
-    val activityName: String
+    val activityName: String,
 )

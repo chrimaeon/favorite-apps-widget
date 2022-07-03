@@ -26,7 +26,7 @@ val DarkColors = darkColors(
     secondary = deepPurpleVariantLight,
     secondaryVariant = deepPurpleVariantLight,
     onPrimary = Color.Black,
-    onSecondary = Color.Black
+    onSecondary = Color.Black,
 )
 
 val LightColors = lightColors(
@@ -35,16 +35,16 @@ val LightColors = lightColors(
     secondary = deepPurple,
     secondaryVariant = deepPurpleVariantDark,
     onPrimary = Color.Black,
-    onSecondary = Color.Black
+    onSecondary = Color.Black,
 )
 
 @Composable
 fun Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     MaterialTheme(
         colors = if (darkTheme) DarkColors else LightColors,
-        content = content
+        content = content,
     )
 }
