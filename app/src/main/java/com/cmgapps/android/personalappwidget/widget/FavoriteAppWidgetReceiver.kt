@@ -67,15 +67,25 @@ class FavoriteAppWidget : GlanceAppWidget() {
                 .appWidgetBackgroundRadius()
                 .padding(16.dp),
         ) {
-            var favApps = appDao.getAllOneShot().map { selectedApp ->
-                val resolveInfo = packageManager.resolveActivity(
-                    Intent(Intent.ACTION_MAIN).also {
-                        it.addCategory(Intent.CATEGORY_LAUNCHER)
-                        it.component =
-                            ComponentName(selectedApp.packageName, selectedApp.activityName)
-                    },
-                    PackageManager.MATCH_DEFAULT_ONLY
-                )
+            val favApps = appDao.getAllOneShot().map { selectedApp ->
+                val intent = Intent(Intent.ACTION_MAIN).also {
+                    it.addCategory(Intent.CATEGORY_LAUNCHER)
+                    it.component =
+                        ComponentName(selectedApp.packageName, selectedApp.activityName)
+                }
+                val resolveInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    packageManager.resolveActivity(
+                        intent,
+                        PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_DEFAULT_ONLY.toLong())
+                    )
+                } else {
+                    @Suppress("DEPRECATION")
+                    packageManager.resolveActivity(
+                        intent,
+                        PackageManager.MATCH_DEFAULT_ONLY
+                    )
+                }
+
                 FavoriteApp(
                     packageName = selectedApp.packageName,
                     selectedApp.activityName,
@@ -125,7 +135,7 @@ class FavoriteAppWidget : GlanceAppWidget() {
 private data class FavoriteApp(
     val packageName: String,
     val activityName: String,
-    val resolveInfo: ResolveInfo?
+    val resolveInfo: ResolveInfo?,
 )
 
 @AndroidEntryPoint
@@ -153,9 +163,11 @@ class FavoriteAppWidgetReceiver : GlanceAppWidgetReceiver() {
 
         @JvmStatic
         fun sendAppsUpdatedBroadcast(context: Context) {
-            context.sendBroadcast(Intent(context, FavoriteAppWidgetReceiver::class.java).also {
-                it.action = ACTION_APPS_UPDATED
-            })
+            context.sendBroadcast(
+                Intent(context, FavoriteAppWidgetReceiver::class.java).also {
+                    it.action = ACTION_APPS_UPDATED
+                }
+            )
         }
     }
 }

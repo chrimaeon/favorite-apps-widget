@@ -9,6 +9,7 @@ package com.cmgapps.android.personalappwidget.ui
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -62,7 +63,6 @@ import com.cmgapps.android.personalappwidget.model.App
 import com.cmgapps.android.personalappwidget.widget.FavoriteAppWidgetReceiver
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -111,7 +111,6 @@ val DefaultIconSize = 40.dp
 
 @Composable
 private fun SelectAppScreen(appDao: AppDao) {
-
     val context = LocalContext.current
     val pm: PackageManager = context.packageManager
 
@@ -121,13 +120,17 @@ private fun SelectAppScreen(appDao: AppDao) {
 
     val allAppsInfo: List<App> by produceState(emptyList(), pm) {
         value = withContext(Dispatchers.IO) {
-            pm.queryIntentActivities(intent, 0)
-                .map {
-                    App(
-                        info = it,
-                        displayName = it.loadLabel(pm).toString(),
-                    )
-                }.sortedBy { it.displayName }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                pm.queryIntentActivities(intent, PackageManager.ResolveInfoFlags.of(0))
+            } else {
+                @Suppress("DEPRECATION")
+                pm.queryIntentActivities(intent, 0)
+            }.map {
+                App(
+                    info = it,
+                    displayName = it.loadLabel(pm).toString(),
+                )
+            }.sortedBy { it.displayName }
         }
     }
 
@@ -173,7 +176,7 @@ private fun Item(
     icon: ImageBitmap?,
     iconSize: Dp = DefaultIconSize,
     selected: Boolean,
-    onSelectionChange: (Boolean) -> Unit
+    onSelectionChange: (Boolean) -> Unit,
 ) {
     CompositionLocalProvider(
         LocalContentColor provides MaterialTheme.colors.onSurface
