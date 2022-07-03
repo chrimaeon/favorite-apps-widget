@@ -1,0 +1,43 @@
+name: Build & Test
+
+on:
+  push:
+    branches:
+      - develop
+      - 'releases/**'
+    tags:
+      - '**'
+
+jobs:
+  buildAndTest:
+    name: Run checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: 11
+
+      - name: Gradle Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches/modules-*
+            ~/.gradle/caches/jars-*
+            ~/.gradle/caches/build-cache-*
+          key: gradle-${{ hashFiles('**/build.gradle*', '**/*.versions.toml') }}
+
+      - name: Gradle Wrapper Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+
+      - name: Download dependencies
+        run: ./gradlew dependencies
+
+      - name: Check :app
+        run: ./gradlew :app:check
