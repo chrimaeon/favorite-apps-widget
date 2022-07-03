@@ -30,11 +30,6 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".widget.FavoriteAppViewsService"
-            android:permission="android.permission.BIND_REMOTEVIEWS"
-            android:exported="false"/>
-
         <receiver
             android:name=".widget.FavoriteAppWidgetReceiver"
             android:exported="true">
