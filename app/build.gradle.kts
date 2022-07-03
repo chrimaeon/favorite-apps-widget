@@ -14,13 +14,13 @@ plugins {
 }
 
 android {
-    compileSdk = 31
-    buildToolsVersion = "32.0.0"
+    compileSdk = 33
+    buildToolsVersion = "33.0.0"
 
     defaultConfig {
         applicationId = "com.cmgapps.android.personalappwidget"
         minSdk = 26
-        targetSdk = 31
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0.0"
     }
@@ -30,7 +30,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.get()
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
 
     buildTypes {

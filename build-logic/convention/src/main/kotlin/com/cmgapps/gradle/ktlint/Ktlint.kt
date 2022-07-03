@@ -55,5 +55,5 @@ fun Project.configureKtlint() {
     }
 
     val libs = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
-    dependencies.add(ktlintConfiguration.name, libs.findDependency("ktlint").orElseThrow())
+    dependencies.add(ktlintConfiguration.name, libs.findLibrary("ktlint").orElseThrow())
 }

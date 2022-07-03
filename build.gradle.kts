@@ -36,7 +36,7 @@ allprojects {
         withType<KotlinCompile> {
             kotlinOptions {
                 jvmTarget = JavaVersion.VERSION_11.toString()
-                freeCompilerArgs = freeCompilerArgs + listOf("-Xopt-in=kotlin.RequiresOptIn")
+                freeCompilerArgs = freeCompilerArgs + listOf("-opt-in=kotlin.RequiresOptIn")
             }
         }
     }

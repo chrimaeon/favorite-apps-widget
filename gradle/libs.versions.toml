@@ -1,22 +1,22 @@
 [versions]
-gradle = "7.3.3"
-hilt = "2.40.5"
-kotlin = "1.6.10"
-compose = "1.1.0-rc03"
-room = "2.4.1"
-dagger = "2.40.5"
+gradle = "7.4.2"
+kotlin = "1.7.0"
+compose = "1.1.1"
+composeCompiler = "1.2.0"
+room = "2.4.2"
+dagger = "2.42"
 logtag = "1.1.0"
 
 [plugins]
 benManesVersionsGradle = "com.github.ben-manes.versions:0.42.0"
-ksp = "com.google.devtools.ksp:1.6.10-1.0.2"
-android-application = "com.android.application:7.1.1"
+ksp = "com.google.devtools.ksp:1.7.0-1.0.6"
+android-application = "com.android.application:7.2.1"
 
 [libraries]
 kotlinPluginDep = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 hiltPluginDep = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "dagger" }
 
-androidx-activity-compose = "androidx.activity:activity-compose:1.4.0"
+androidx-activity-compose = "androidx.activity:activity-compose:1.5.0"
 
 kotlinx-coroutines =  "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0"
 
@@ -28,7 +28,7 @@ compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
 
 glance-appwidget = "androidx.glance:glance-appwidget:1.0.0-alpha02"
 
-ktlint = "com.pinterest:ktlint:0.43.2"
+ktlint = "com.pinterest:ktlint:0.46.1"
 
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
