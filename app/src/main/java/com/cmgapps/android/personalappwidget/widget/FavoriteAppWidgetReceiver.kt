@@ -101,7 +101,6 @@ class FavoriteAppWidget : GlanceAppWidget() {
                 }
                 val lastIndex = favApps.lastIndex
                 favApps.forEachIndexed { index, favoriteApp ->
-                    val resolveInfo = favoriteApp.resolveInfo
                     Row(
                         modifier = GlanceModifier.clickable(
                             actionStartActivity(
@@ -115,13 +114,14 @@ class FavoriteAppWidget : GlanceAppWidget() {
                     ) {
                         Image(
                             provider = ImageProvider(
-                                resolveInfo.loadIcon(packageManager).toBitmap(iconSize, iconSize),
+                                favoriteApp.resolveInfo.loadIcon(packageManager)
+                                    .toBitmap(iconSize, iconSize),
                             ),
                             contentDescription = null,
                         )
                         Spacer(GlanceModifier.width(8.dp))
                         Text(
-                            resolveInfo.loadLabel(packageManager).toString(),
+                            favoriteApp.resolveInfo.loadLabel(packageManager).toString(),
                             style = TextStyle(color = LocalTextColorProvider.current),
                             maxLines = 2,
                         )
