@@ -14,7 +14,6 @@ import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.os.Build
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.glance.GlanceModifier
@@ -37,6 +36,7 @@ import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.width
 import androidx.glance.text.Text
+import androidx.glance.text.TextStyle
 import com.cmgapps.android.personalappwidget.BuildConfig
 import com.cmgapps.android.personalappwidget.R
 import com.cmgapps.android.personalappwidget.infra.db.AppDao
@@ -56,70 +56,79 @@ class FavoriteAppWidget : GlanceAppWidget() {
         ).getAppDao()
 
         val packageManager = appContext.packageManager
-
         val iconSize = appContext.resources.getDimensionPixelSize(R.dimen.icon_size)
 
-        Column(
-            modifier = GlanceModifier
-                .fillMaxSize()
-                .background(day = Color.LightGray, night = Color.DarkGray)
-                .appWidgetBackground()
-                .appWidgetBackgroundRadius()
-                .padding(16.dp),
-        ) {
-            val favApps = appDao.getAllOneShot().map { selectedApp ->
-                val intent = Intent(Intent.ACTION_MAIN).also {
-                    it.addCategory(Intent.CATEGORY_LAUNCHER)
-                    it.component =
-                        ComponentName(selectedApp.packageName, selectedApp.activityName)
-                }
-                val resolveInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    packageManager.resolveActivity(
-                        intent,
-                        PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_DEFAULT_ONLY.toLong()),
+        WidgetTheme {
+            Column(
+                modifier = GlanceModifier
+                    .fillMaxSize()
+                    .background(
+                        day = LocalWidgetBackground.current.day,
+                        night = LocalWidgetBackground.current.night,
                     )
-                } else {
-                    @Suppress("DEPRECATION")
-                    packageManager.resolveActivity(
-                        intent,
-                        PackageManager.MATCH_DEFAULT_ONLY,
-                    )
-                }
+                    .appWidgetBackground()
+                    .appWidgetBackgroundRadius()
+                    .padding(16.dp),
+            ) {
+                val favApps = appDao.getAllOneShot().mapNotNull { selectedApp ->
+                    val intent = Intent(Intent.ACTION_MAIN).also {
+                        it.addCategory(Intent.CATEGORY_LAUNCHER)
+                        it.component =
+                            ComponentName(selectedApp.packageName, selectedApp.activityName)
+                    }
+                    val resolveInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        packageManager.resolveActivity(
+                            intent,
+                            PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_DEFAULT_ONLY.toLong()),
+                        )
+                    } else {
+                        @Suppress("DEPRECATION")
+                        packageManager.resolveActivity(
+                            intent,
+                            PackageManager.MATCH_DEFAULT_ONLY,
+                        )
+                    }
 
-                FavoriteApp(
-                    packageName = selectedApp.packageName,
-                    selectedApp.activityName,
-                    resolveInfo,
-                )
-            }.filter { it.resolveInfo != null }
-            val lastIndex = favApps.lastIndex
-            favApps.forEachIndexed { index, favoriteApp ->
-                val resolveInfo = favoriteApp.resolveInfo!!
-                Row(
-                    modifier = GlanceModifier.clickable(
-                        actionStartActivity(
-                            ComponentName(
-                                favoriteApp.packageName,
-                                favoriteApp.activityName,
+                    if (resolveInfo == null) {
+                        null
+                    } else {
+                        FavoriteApp(
+                            packageName = selectedApp.packageName,
+                            selectedApp.activityName,
+                            resolveInfo,
+                        )
+                    }
+                }
+                val lastIndex = favApps.lastIndex
+                favApps.forEachIndexed { index, favoriteApp ->
+                    val resolveInfo = favoriteApp.resolveInfo
+                    Row(
+                        modifier = GlanceModifier.clickable(
+                            actionStartActivity(
+                                ComponentName(
+                                    favoriteApp.packageName,
+                                    favoriteApp.activityName,
+                                ),
                             ),
                         ),
-                    ),
-                    verticalAlignment = Alignment.Vertical.CenterVertically,
-                ) {
-                    Image(
-                        provider = ImageProvider(
-                            resolveInfo.loadIcon(packageManager).toBitmap(iconSize, iconSize),
-                        ),
-                        contentDescription = null,
-                    )
-                    Spacer(GlanceModifier.width(8.dp))
-                    Text(
-                        resolveInfo.loadLabel(packageManager).toString(),
-                        maxLines = 2,
-                    )
-                }
-                if (index != lastIndex) {
-                    Spacer(GlanceModifier.height(8.dp))
+                        verticalAlignment = Alignment.Vertical.CenterVertically,
+                    ) {
+                        Image(
+                            provider = ImageProvider(
+                                resolveInfo.loadIcon(packageManager).toBitmap(iconSize, iconSize),
+                            ),
+                            contentDescription = null,
+                        )
+                        Spacer(GlanceModifier.width(8.dp))
+                        Text(
+                            resolveInfo.loadLabel(packageManager).toString(),
+                            style = TextStyle(color = LocalTextColorProvider.current),
+                            maxLines = 2,
+                        )
+                    }
+                    if (index != lastIndex) {
+                        Spacer(GlanceModifier.height(8.dp))
+                    }
                 }
             }
         }
@@ -135,7 +144,7 @@ class FavoriteAppWidget : GlanceAppWidget() {
 private data class FavoriteApp(
     val packageName: String,
     val activityName: String,
-    val resolveInfo: ResolveInfo?,
+    val resolveInfo: ResolveInfo,
 )
 
 @AndroidEntryPoint
@@ -174,7 +183,7 @@ class FavoriteAppWidgetReceiver : GlanceAppWidgetReceiver() {
 
 @Composable
 private fun GlanceModifier.appWidgetBackgroundRadius(): GlanceModifier {
-    return if (Build.VERSION.SDK_INT >= 31) {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         this.cornerRadius(android.R.dimen.system_app_widget_background_radius)
     } else {
         this.cornerRadius(16.dp)
