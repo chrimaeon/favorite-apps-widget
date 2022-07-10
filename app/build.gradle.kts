@@ -33,8 +33,13 @@ android {
         kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
 
+    val debugSigningConfig by signingConfigs.named("debug") {
+        storeFile = projectDir.resolve("keystore").resolve("debug.keystore")
+    }
+
     buildTypes {
         debug {
+            signingConfig = debugSigningConfig
             isMinifyEnabled = false
         }
 
