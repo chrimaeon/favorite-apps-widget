@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022. Christian Grach <christian.grach@cmgapps.com>
+  ~
+  ~ SPDX-License-Identifier: Apache-2.0
+  -->
+
+<resources>
+    <color name="amber30">#ffffd54f</color>
+    <color name="amber40">#ffffca28</color>
+    <color name="amber90">#ffff6f00</color>
+    <color name="amber80">#ffff8f00</color>
+    <color name="deepPurple30">#ff9575cd</color>
+    <color name="deepPurple40">#ff7e57c2</color>
+    <color name="deepPurple90">#ff311b92</color>
+    <color name="deepPurple80">#ff4527a0</color>
+    <color name="black">#ff000000</color>
+    <color name="white">#ffffffff</color>
+</resources>

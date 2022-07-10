@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+  ~ Copyright (c) 2022. Christian Grach <christian.grach@cmgapps.com>
+  ~
+  ~ SPDX-License-Identifier: Apache-2.0
+  -->
+
+<resources>
+
+<!--    <style name="AppTheme" parent="Theme.Material3.Light.NoActionBar">-->
+    <!--        <item name="colorPrimary">@android:color/system_accent1_600</item>-->
+    <!--        <item name="colorOnPrimary">@android:color/system_accent1_0</item>-->
+    <!--        <item name="colorPrimaryContainer">@android:color/system_accent1_100</item>-->
+    <!--        <item name="colorOnPrimaryContainer">@android:color/system_accent1_900</item>-->
+    <!--        <item name="colorPrimaryInverse">@android:color/system_accent1_200</item>-->
+    <!--        <item name="colorSecondary">@android:color/system_accent2_600</item>-->
+    <!--        <item name="colorOnSecondary">@android:color/system_accent2_0</item>-->
+    <!--        <item name="colorSecondaryContainer">@android:color/system_accent2_100</item>-->
+    <!--        <item name="colorOnSecondaryContainer">@android:color/system_accent2_900</item>-->
+    <!--    </style>-->
+
+</resources>

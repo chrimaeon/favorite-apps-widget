@@ -10,7 +10,6 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.os.Build
 import androidx.compose.runtime.Composable
@@ -31,7 +30,6 @@ import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
-import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.width
@@ -39,7 +37,6 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.cmgapps.android.personalappwidget.BuildConfig
 import com.cmgapps.android.personalappwidget.R
-import com.cmgapps.android.personalappwidget.infra.db.AppDao
 import dagger.hilt.EntryPoint
 import dagger.hilt.EntryPoints
 import dagger.hilt.InstallIn
@@ -47,13 +44,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.components.SingletonComponent
 
 class FavoriteAppWidget : GlanceAppWidget() {
+
     @Composable
     override fun Content() {
         val appContext = LocalContext.current.applicationContext
-        val appDao = EntryPoints.get(
+        val viewModel = EntryPoints.get(
             appContext,
-            FavoriteAppWidgetInterface::class.java,
-        ).getAppDao()
+            FavoriteAppWidgetEntryPoint::class.java,
+        ).getViewModel()
 
         val packageManager = appContext.packageManager
         val iconSize = appContext.resources.getDimensionPixelSize(R.dimen.icon_size)
@@ -61,7 +59,6 @@ class FavoriteAppWidget : GlanceAppWidget() {
         WidgetTheme {
             Column(
                 modifier = GlanceModifier
-                    .fillMaxSize()
                     .background(
                         day = LocalWidgetBackground.current.day,
                         night = LocalWidgetBackground.current.night,
@@ -70,35 +67,7 @@ class FavoriteAppWidget : GlanceAppWidget() {
                     .appWidgetBackgroundRadius()
                     .padding(16.dp),
             ) {
-                val favApps = appDao.getAllOneShot().mapNotNull { selectedApp ->
-                    val intent = Intent(Intent.ACTION_MAIN).also {
-                        it.addCategory(Intent.CATEGORY_LAUNCHER)
-                        it.component =
-                            ComponentName(selectedApp.packageName, selectedApp.activityName)
-                    }
-                    val resolveInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        packageManager.resolveActivity(
-                            intent,
-                            PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_DEFAULT_ONLY.toLong()),
-                        )
-                    } else {
-                        @Suppress("DEPRECATION")
-                        packageManager.resolveActivity(
-                            intent,
-                            PackageManager.MATCH_DEFAULT_ONLY,
-                        )
-                    }
-
-                    if (resolveInfo == null) {
-                        null
-                    } else {
-                        FavoriteApp(
-                            packageName = selectedApp.packageName,
-                            selectedApp.activityName,
-                            resolveInfo,
-                        )
-                    }
-                }
+                val favApps = viewModel.getFavoriteApps()
                 val lastIndex = favApps.lastIndex
                 favApps.forEachIndexed { index, favoriteApp ->
                     Row(
@@ -136,12 +105,12 @@ class FavoriteAppWidget : GlanceAppWidget() {
 
     @EntryPoint
     @InstallIn(SingletonComponent::class)
-    interface FavoriteAppWidgetInterface {
-        fun getAppDao(): AppDao
+    interface FavoriteAppWidgetEntryPoint {
+        fun getViewModel(): FavoriteAppWidgetViewModel
     }
 }
 
-private data class FavoriteApp(
+data class FavoriteApp(
     val packageName: String,
     val activityName: String,
     val resolveInfo: ResolveInfo,

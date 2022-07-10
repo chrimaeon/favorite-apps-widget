@@ -1,5 +1,23 @@
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<?xml version="1.0" encoding="UTF-8" ?>
 
-    <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar"/>
+<!--
+  ~ Copyright (c) 2022. Christian Grach <christian.grach@cmgapps.com>
+  ~
+  ~ SPDX-License-Identifier: Apache-2.0
+  -->
+
+<resources>
+
+    <style name="AppTheme" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/amber40</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorPrimaryContainer">@color/amber90</item>
+        <item name="colorOnPrimaryContainer">@color/black</item>
+        <item name="colorPrimaryInverse">@color/amber80</item>
+        <item name="colorSecondary">@color/deepPurple40</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSecondaryContainer">@color/deepPurple90</item>
+        <item name="colorOnSecondaryContainer">@color/white</item>
+    </style>
 
 </resources>

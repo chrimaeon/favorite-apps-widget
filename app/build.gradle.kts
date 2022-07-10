@@ -55,7 +55,7 @@ ksp {
 
 dependencies {
     implementation(libs.bundles.compose)
-    implementation(libs.androidx.activity.compose)
+    implementation(libs.bundles.androidx)
     implementation(libs.glance.appwidget)
 
     implementation(libs.logtag.lib)
@@ -65,6 +65,6 @@ dependencies {
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
 
-    implementation(libs.hilt.android)
+    implementation(libs.bundles.hilt)
     kapt(libs.hilt.compiler)
 }

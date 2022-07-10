@@ -17,14 +17,16 @@ kotlinPluginDep = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", versio
 hiltPluginDep = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "dagger" }
 
 androidx-activity-compose = "androidx.activity:activity-compose:1.5.0"
+androidx-material = "com.google.android.material:material:1.6.1"
 
-kotlinx-coroutines =  "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0"
+kotlinx-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0"
 
-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose"}
-compose-icons = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose"}
-compose-material = { module = "androidx.compose.material:material", version.ref = "compose"}
-compose-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose"}
+compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
+compose-icons = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
+compose-material = "androidx.compose.material3:material3:1.0.0-alpha14"
+compose-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
+
 
 glance-appwidget = "androidx.glance:glance-appwidget:1.0.0-alpha03"
 
@@ -36,8 +38,9 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
 hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "dagger" }
+hilt-compose-navigation = "androidx.hilt:hilt-navigation-compose:1.0.0"
 
-logtag-lib = { module= "com.cmgapps.logtag:log-tag", version.ref = "logtag" }
+logtag-lib = { module = "com.cmgapps.logtag:log-tag", version.ref = "logtag" }
 logtag-processor = { module = "com.cmgapps.logtag:processor", version.ref = "logtag" }
 
 [bundles]
@@ -47,4 +50,14 @@ compose = [
     "compose-material",
     "compose-tooling",
     "compose-ui",
+]
+
+hilt = [
+    "hilt-android",
+    "hilt-compose-navigation",
+]
+
+androidx = [
+    "androidx-activity-compose",
+    "androidx-material",
 ]

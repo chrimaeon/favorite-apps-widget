@@ -8,6 +8,7 @@ package com.cmgapps.android.personalappwidget.infra.db
 
 import androidx.room.Dao
 import androidx.room.Database
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -20,13 +21,13 @@ interface AppDao {
     fun getAll(): Flow<List<SelectedApp>>
 
     @Query("SELECT * from selected_app")
-    fun getAllOneShot(): List<SelectedApp>
+    fun getFavoriteApps(): List<SelectedApp>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(selectedApp: SelectedApp)
 
-    @Query("DELETE FROM selected_app WHERE package_name = :packageName")
-    suspend fun delete(packageName: String)
+    @Delete
+    suspend fun delete(selectedApp: SelectedApp)
 }
 
 @Database(entities = [SelectedApp::class], version = 1)

@@ -55,7 +55,17 @@ tasks {
     named<DependencyUpdatesTask>("dependencyUpdates") {
         revision = "release"
         rejectVersionIf {
-            candidate.group != "androidx.glance" && listOf("alpha", "beta", "rc", "cr", "m", "eap").any { qualifier ->
+            listOf(
+                "androidx.compose.material3",
+                "androidx.glance",
+            ).contains(candidate.group) && listOf(
+                "alpha",
+                "beta",
+                "rc",
+                "cr",
+                "m",
+                "eap",
+            ).any { qualifier ->
                 """(?i).*[.-]?$qualifier[.\d-]*""".toRegex()
                     .containsMatchIn(candidate.version)
             }
