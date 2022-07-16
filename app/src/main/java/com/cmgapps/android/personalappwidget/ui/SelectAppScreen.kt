@@ -75,7 +75,9 @@ fun SelectAppScreen(
     ) {
         items(
             allApps,
-            key = { it.packageName },
+            // apps can have more than one launcher activity;
+            // add the activity name for uniqueness
+            key = { it.packageName + it.activityName },
         ) { app ->
             val bitmap by loadIcon(packageManager, app.info, imageSizePx)
 
