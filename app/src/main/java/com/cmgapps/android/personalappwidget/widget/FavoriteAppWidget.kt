@@ -11,8 +11,11 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ResolveInfo
+import android.content.res.Configuration
+import android.graphics.drawable.Icon
 import android.os.Build
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.glance.GlanceModifier
@@ -26,10 +29,13 @@ import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.appWidgetBackground
 import androidx.glance.appwidget.background
 import androidx.glance.appwidget.cornerRadius
+import androidx.glance.appwidget.unit.ColorProvider
 import androidx.glance.layout.Alignment
+import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
+import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.width
@@ -37,6 +43,7 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.cmgapps.android.personalappwidget.BuildConfig
 import com.cmgapps.android.personalappwidget.R
+import com.cmgapps.android.personalappwidget.ui.SelectAppActivity
 import dagger.hilt.EntryPoint
 import dagger.hilt.EntryPoints
 import dagger.hilt.InstallIn
@@ -54,9 +61,19 @@ class FavoriteAppWidget : GlanceAppWidget() {
         ).getViewModel()
 
         val packageManager = appContext.packageManager
-        val iconSize = appContext.resources.getDimensionPixelSize(R.dimen.icon_size)
+        val resources = appContext.resources
+        val iconSize = resources.getDimensionPixelSize(R.dimen.icon_size)
 
         WidgetTheme {
+            val localTextColor = LocalTextColor.current
+            val textColor =
+                if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
+                    Configuration.UI_MODE_NIGHT_YES
+                ) {
+                    localTextColor.night
+                } else {
+                    localTextColor.day
+                }
             Column(
                 modifier = GlanceModifier
                     .background(
@@ -67,18 +84,35 @@ class FavoriteAppWidget : GlanceAppWidget() {
                     .appWidgetBackgroundRadius()
                     .padding(16.dp),
             ) {
+                Box(
+                    modifier = GlanceModifier.fillMaxWidth(),
+                    contentAlignment = Alignment.CenterEnd,
+                ) {
+                    Image(
+                        provider = ImageProvider(
+                            Icon.createWithResource(appContext, R.drawable.ic_add_24)
+                                .setTint(textColor.toArgb()),
+                        ),
+                        contentDescription = resources.getString(R.string.add_app),
+                        modifier = GlanceModifier
+                            .clickable(actionStartActivity(SelectAppActivity::class.java)),
+                    )
+                }
+                Spacer(GlanceModifier.height(2.dp))
                 val favApps = viewModel.getFavoriteApps()
                 val lastIndex = favApps.lastIndex
                 favApps.forEachIndexed { index, favoriteApp ->
                     Row(
-                        modifier = GlanceModifier.clickable(
-                            actionStartActivity(
-                                ComponentName(
-                                    favoriteApp.packageName,
-                                    favoriteApp.activityName,
+                        modifier = GlanceModifier
+                            .fillMaxWidth()
+                            .clickable(
+                                actionStartActivity(
+                                    ComponentName(
+                                        favoriteApp.packageName,
+                                        favoriteApp.activityName,
+                                    ),
                                 ),
                             ),
-                        ),
                         verticalAlignment = Alignment.Vertical.CenterVertically,
                     ) {
                         Image(
@@ -91,7 +125,12 @@ class FavoriteAppWidget : GlanceAppWidget() {
                         Spacer(GlanceModifier.width(8.dp))
                         Text(
                             favoriteApp.resolveInfo.loadLabel(packageManager).toString(),
-                            style = TextStyle(color = LocalTextColorProvider.current),
+                            style = TextStyle(
+                                color = ColorProvider(
+                                    localTextColor.day,
+                                    localTextColor.night,
+                                ),
+                            ),
                             maxLines = 2,
                         )
                     }

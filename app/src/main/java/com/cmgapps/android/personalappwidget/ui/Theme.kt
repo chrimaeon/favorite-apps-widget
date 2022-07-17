@@ -55,12 +55,11 @@ fun Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    val lightColorScheme =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            dynamicLightColorScheme(LocalContext.current)
-        } else {
-            LightColors
-        }
+    val lightColorScheme = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        dynamicLightColorScheme(LocalContext.current)
+    } else {
+        LightColors
+    }
 
     val darkColorScheme = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         dynamicDarkColorScheme(LocalContext.current)

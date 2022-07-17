@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (c) 2022. Christian Grach <christian.grach@cmgapps.com>
+  ~
+  ~ SPDX-License-Identifier: Apache-2.0
+  -->
+
 <resources>
 
     <string name="app_name">Favorite Apps Widget</string>
     <string name="title_select_app_title">Select Apps</string>
     <string name="refresh_widget">Refresh Widget</string>
-    <string name="list_empty">No Apps Selected</string>
     <string name="widget_loading">Loading …</string>
+    <string name="add_app">Add App</string>
 
 </resources>
