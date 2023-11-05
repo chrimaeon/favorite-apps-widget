@@ -1,18 +1,19 @@
 #!/bin/sh
 
-# ln -s -f ../../scripts/pre-commit .git/hooks/pre-commit
+# link with `ln -s -f ../../scripts/pre-commit .git/hooks/pre-commit`
 
-set -e
-
-command -v ktlint >/dev/null 2>&1 || {
-  printf "ktlint not found.\nAborting.\n" 1>&2
+if git commit -v --dry-run | grep 'STOPSHIP' >/dev/null 2>&1; then
+  echo "Trying to commit non-committable code."
+  echo "Remove the 'STOPSHIP' string and try again."
   exit 1
-}
+fi
 
 FILES=$(git diff --cached --name-only | grep -i -E "\.kts?" || true)
 
-if [ -n "$FILES" ]; then
-  ktlint "$FILES"
+if [ -n "$FILES" ]
+then
+    ktlint -F -R ./scripts/ktlint-compose-0.3.3-all.jar $FILES
+    git add $FILES
 else
-  echo "No file for ktlint"
+    echo "No file for ktlint"
 fi
