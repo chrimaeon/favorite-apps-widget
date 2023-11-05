@@ -13,4 +13,6 @@
     android:targetCellWidth="3"
     android:targetCellHeight="2"
     android:resizeMode="vertical|horizontal"
+    android:previewLayout="@layout/preview_layout"
+    android:previewImage="@drawable/preview_image"
     android:widgetCategory="home_screen" />

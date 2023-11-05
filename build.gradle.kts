@@ -10,20 +10,11 @@ import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import com.github.benmanes.gradle.versions.updates.gradle.GradleReleaseChannel.CURRENT
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath(libs.kotlinPluginDep)
-        classpath(libs.hiltPluginDep)
-    }
-}
-
 plugins {
     alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.hilt) apply false
+    alias(libs.plugins.ksp) apply false
     alias(libs.plugins.benManesVersionsGradle)
 }
 
@@ -35,7 +26,7 @@ allprojects {
 
         withType<KotlinCompile> {
             kotlinOptions {
-                jvmTarget = JavaVersion.VERSION_11.toString()
+                jvmTarget = JavaVersion.VERSION_17.toString()
                 freeCompilerArgs = freeCompilerArgs + listOf("-opt-in=kotlin.RequiresOptIn")
             }
         }
@@ -44,7 +35,7 @@ allprojects {
 
 tasks {
     register("clean", Delete::class) {
-        delete(buildDir)
+        delete(rootProject.layout.buildDirectory)
     }
 
     named<Wrapper>("wrapper") {
@@ -55,17 +46,7 @@ tasks {
     named<DependencyUpdatesTask>("dependencyUpdates") {
         revision = "release"
         rejectVersionIf {
-            listOf(
-                "androidx.compose.material3",
-                "androidx.glance",
-            ).contains(candidate.group) && listOf(
-                "alpha",
-                "beta",
-                "rc",
-                "cr",
-                "m",
-                "eap",
-            ).any { qualifier ->
+            listOf("alpha", "beta", "rc", "cr", "m", "eap", "dev").any { qualifier ->
                 """(?i).*[.-]?$qualifier[.\d-]*""".toRegex()
                     .containsMatchIn(candidate.version)
             }

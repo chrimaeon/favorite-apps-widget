@@ -6,30 +6,27 @@
 
 package com.cmgapps.android.personalappwidget.widget
 
-import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.content.pm.ResolveInfo
-import android.content.res.Configuration
-import android.graphics.drawable.Icon
 import android.os.Build
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
+import androidx.glance.ColorFilter
+import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
+import androidx.glance.GlanceTheme
 import androidx.glance.Image
 import androidx.glance.ImageProvider
-import androidx.glance.LocalContext
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.appWidgetBackground
-import androidx.glance.appwidget.background
 import androidx.glance.appwidget.cornerRadius
-import androidx.glance.appwidget.unit.ColorProvider
+import androidx.glance.appwidget.provideContent
+import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
@@ -41,7 +38,6 @@ import androidx.glance.layout.padding
 import androidx.glance.layout.width
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
-import com.cmgapps.android.personalappwidget.BuildConfig
 import com.cmgapps.android.personalappwidget.R
 import com.cmgapps.android.personalappwidget.ui.SelectAppActivity
 import dagger.hilt.EntryPoint
@@ -49,93 +45,91 @@ import dagger.hilt.EntryPoints
 import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class FavoriteAppWidget : GlanceAppWidget() {
-
-    @Composable
-    override fun Content() {
-        val appContext = LocalContext.current.applicationContext
-        val viewModel = EntryPoints.get(
-            appContext,
-            FavoriteAppWidgetEntryPoint::class.java,
-        ).getViewModel()
+    override suspend fun provideGlance(
+        context: Context,
+        id: GlanceId,
+    ) {
+        val appContext = context.applicationContext
+        val viewModel =
+            EntryPoints.get(
+                appContext,
+                FavoriteAppWidgetEntryPoint::class.java,
+            ).getViewModel()
 
         val packageManager = appContext.packageManager
         val resources = appContext.resources
         val iconSize = resources.getDimensionPixelSize(R.dimen.icon_size)
 
-        WidgetTheme {
-            val localTextColor = LocalTextColor.current
-            val textColor =
-                if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
-                    Configuration.UI_MODE_NIGHT_YES
+        val favApps =
+            withContext(Dispatchers.IO) {
+                viewModel.getFavoriteApps()
+            }
+
+        provideContent {
+            WidgetTheme {
+                val textColor = GlanceTheme.colors.onBackground
+                Column(
+                    modifier =
+                        GlanceModifier.background(GlanceTheme.colors.background)
+                            .appWidgetBackground()
+                            .appWidgetBackgroundRadius()
+                            .padding(16.dp),
                 ) {
-                    localTextColor.night
-                } else {
-                    localTextColor.day
-                }
-            Column(
-                modifier = GlanceModifier
-                    .background(
-                        day = LocalWidgetBackground.current.day,
-                        night = LocalWidgetBackground.current.night,
-                    )
-                    .appWidgetBackground()
-                    .appWidgetBackgroundRadius()
-                    .padding(16.dp),
-            ) {
-                Box(
-                    modifier = GlanceModifier.fillMaxWidth(),
-                    contentAlignment = Alignment.CenterEnd,
-                ) {
-                    Image(
-                        provider = ImageProvider(
-                            Icon.createWithResource(appContext, R.drawable.ic_add_24)
-                                .setTint(textColor.toArgb()),
-                        ),
-                        contentDescription = resources.getString(R.string.add_app),
-                        modifier = GlanceModifier
-                            .clickable(actionStartActivity(SelectAppActivity::class.java)),
-                    )
-                }
-                Spacer(GlanceModifier.height(2.dp))
-                val favApps = viewModel.getFavoriteApps()
-                val lastIndex = favApps.lastIndex
-                favApps.forEachIndexed { index, favoriteApp ->
-                    Row(
-                        modifier = GlanceModifier
-                            .fillMaxWidth()
-                            .clickable(
-                                actionStartActivity(
-                                    ComponentName(
-                                        favoriteApp.packageName,
-                                        favoriteApp.activityName,
-                                    ),
-                                ),
-                            ),
-                        verticalAlignment = Alignment.Vertical.CenterVertically,
+                    Box(
+                        modifier = GlanceModifier.fillMaxWidth(),
+                        contentAlignment = Alignment.CenterEnd,
                     ) {
                         Image(
-                            provider = ImageProvider(
-                                favoriteApp.resolveInfo.loadIcon(packageManager)
-                                    .toBitmap(iconSize, iconSize),
-                            ),
-                            contentDescription = null,
-                        )
-                        Spacer(GlanceModifier.width(8.dp))
-                        Text(
-                            favoriteApp.resolveInfo.loadLabel(packageManager).toString(),
-                            style = TextStyle(
-                                color = ColorProvider(
-                                    localTextColor.day,
-                                    localTextColor.night,
-                                ),
-                            ),
-                            maxLines = 2,
+                            provider = ImageProvider(R.drawable.ic_add_24),
+                            contentDescription = resources.getString(R.string.add_app),
+                            colorFilter = ColorFilter.tint(textColor),
+                            modifier =
+                                GlanceModifier
+                                    .clickable(actionStartActivity(SelectAppActivity::class.java)),
                         )
                     }
-                    if (index != lastIndex) {
-                        Spacer(GlanceModifier.height(8.dp))
+                    Spacer(GlanceModifier.height(2.dp))
+                    val lastIndex = favApps.lastIndex
+                    favApps.forEachIndexed { index, favoriteApp ->
+                        Row(
+                            modifier =
+                                GlanceModifier
+                                    .fillMaxWidth()
+                                    .clickable(
+                                        actionStartActivity(
+                                            ComponentName(
+                                                favoriteApp.packageName,
+                                                favoriteApp.activityName,
+                                            ),
+                                        ),
+                                    ),
+                            verticalAlignment = Alignment.Vertical.CenterVertically,
+                        ) {
+                            Image(
+                                provider =
+                                    ImageProvider(
+                                        favoriteApp.resolveInfo.loadIcon(packageManager)
+                                            .toBitmap(iconSize, iconSize),
+                                    ),
+                                contentDescription = null,
+                            )
+                            Spacer(GlanceModifier.width(8.dp))
+                            Text(
+                                favoriteApp.resolveInfo.loadLabel(packageManager).toString(),
+                                style =
+                                    TextStyle(
+                                        color = textColor,
+                                    ),
+                                maxLines = 2,
+                            )
+                        }
+                        if (index != lastIndex) {
+                            Spacer(GlanceModifier.height(8.dp))
+                        }
                     }
                 }
             }
@@ -144,7 +138,7 @@ class FavoriteAppWidget : GlanceAppWidget() {
 
     @EntryPoint
     @InstallIn(SingletonComponent::class)
-    interface FavoriteAppWidgetEntryPoint {
+    fun interface FavoriteAppWidgetEntryPoint {
         fun getViewModel(): FavoriteAppWidgetViewModel
     }
 }
@@ -157,36 +151,8 @@ data class FavoriteApp(
 
 @AndroidEntryPoint
 class FavoriteAppWidgetReceiver : GlanceAppWidgetReceiver() {
-    override val glanceAppWidget = FavoriteAppWidget()
-
-    override fun onReceive(context: Context, intent: Intent) {
-        when (intent.action) {
-            ACTION_APPS_UPDATED -> {
-                val appWidgetManager = AppWidgetManager.getInstance(context)
-                val componentName =
-                    ComponentName(context.packageName, checkNotNull(javaClass.canonicalName))
-                onUpdate(
-                    context,
-                    appWidgetManager,
-                    appWidgetManager.getAppWidgetIds(componentName),
-                )
-            }
-            else -> super.onReceive(context, intent)
-        }
-    }
-
-    companion object {
-        const val ACTION_APPS_UPDATED = BuildConfig.APPLICATION_ID + ".action.ACTION_APPS_UPDATED"
-
-        @JvmStatic
-        fun sendAppsUpdatedBroadcast(context: Context) {
-            context.sendBroadcast(
-                Intent(context, FavoriteAppWidgetReceiver::class.java).also {
-                    it.action = ACTION_APPS_UPDATED
-                },
-            )
-        }
-    }
+    override val glanceAppWidget: GlanceAppWidget
+        get() = FavoriteAppWidget()
 }
 
 @Composable

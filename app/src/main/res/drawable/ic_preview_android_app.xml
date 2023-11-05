@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (c) 2022. Christian Grach <christian.grach@cmgapps.com>
+  ~
+  ~ SPDX-License-Identifier: Apache-2.0
+  -->
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/ic_preview_android_background" />
+    <item
+        android:drawable="@drawable/ic_android_24"
+        android:top="8dp"
+        android:left="8dp"
+        android:bottom="8dp"
+        android:right="8dp" />
+</layer-list>

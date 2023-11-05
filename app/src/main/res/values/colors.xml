@@ -16,4 +16,5 @@
     <color name="deepPurple80">#ff4527a0</color>
     <color name="black">#ff000000</color>
     <color name="white">#ffffffff</color>
+    <color name="preview_widget_background">@color/white</color>
 </resources>

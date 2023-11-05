@@ -6,26 +6,28 @@
 
 plugins {
     id("com.android.application")
-    kotlin("android")
+    alias(libs.plugins.kotlin.android)
     kotlin("kapt")
     alias(libs.plugins.ksp)
-    id("dagger.hilt.android.plugin")
+    alias(libs.plugins.hilt)
     id("com.cmgapps.gradle.ktlint")
 }
 
 android {
-    compileSdk = 33
-    buildToolsVersion = "33.0.0"
+    namespace = "com.cmgapps.android.personalappwidget"
+    compileSdk = 34
+    buildToolsVersion = "34.0.0"
 
     defaultConfig {
         applicationId = "com.cmgapps.android.personalappwidget"
         minSdk = 26
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0.0"
     }
 
     buildFeatures {
+        buildConfig = true
         compose = true
     }
 
@@ -49,9 +51,13 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
+}
+
+kotlin {
+    // jvmToolchain(17)
 }
 
 ksp {
@@ -61,7 +67,7 @@ ksp {
 dependencies {
     implementation(libs.bundles.compose)
     implementation(libs.bundles.androidx)
-    implementation(libs.glance.appwidget)
+    implementation(libs.bundles.glance)
 
     implementation(libs.logtag.lib)
     ksp(libs.logtag.processor)

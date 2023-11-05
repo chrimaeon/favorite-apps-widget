@@ -6,6 +6,6 @@
 
 package com.cmgapps.gradle
 
-import com.cmgapps.gradle.ktlint.configureKtlint
+import configureKtlint
 
 configureKtlint()

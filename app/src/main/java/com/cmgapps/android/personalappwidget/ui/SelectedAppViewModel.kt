@@ -11,12 +11,13 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.glance.appwidget.updateAll
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cmgapps.android.personalappwidget.infra.db.SelectedApp
 import com.cmgapps.android.personalappwidget.model.App
 import com.cmgapps.android.personalappwidget.repository.AppsRepository
-import com.cmgapps.android.personalappwidget.widget.FavoriteAppWidgetReceiver
+import com.cmgapps.android.personalappwidget.widget.FavoriteAppWidget
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,35 +29,40 @@ data class UiState(
 )
 
 @HiltViewModel
-class SelectedAppViewModel @Inject constructor(
-    private val appsRepository: AppsRepository,
-) : ViewModel() {
+class SelectedAppViewModel
+    @Inject
+    constructor(
+        private val appsRepository: AppsRepository,
+    ) : ViewModel() {
+        var uiState: UiState by mutableStateOf(UiState())
+            private set
 
-    var uiState: UiState by mutableStateOf(UiState())
-        private set
-
-    init {
-        viewModelScope.launch {
-            appsRepository.selectedApps.collect {
-                uiState = uiState.copy(selectedApps = it)
-            }
-        }
-        viewModelScope.launch {
-            val allApps = appsRepository.getAllApps()
-            uiState = uiState.copy(allApps = allApps)
-        }
-    }
-
-    fun appSelectionChanged(context: Context, app: App, selected: Boolean) {
-        viewModelScope.launch {
-            with(SelectedApp(app.packageName, app.activityName)) {
-                if (selected) {
-                    appsRepository.addSelectedApp(this)
-                } else {
-                    appsRepository.removeSelectedApp(this)
+        init {
+            viewModelScope.launch {
+                appsRepository.selectedApps.collect {
+                    uiState = uiState.copy(selectedApps = it)
                 }
             }
-            FavoriteAppWidgetReceiver.sendAppsUpdatedBroadcast(context)
+            viewModelScope.launch {
+                val allApps = appsRepository.getAllApps()
+                uiState = uiState.copy(allApps = allApps)
+            }
+        }
+
+        fun appSelectionChanged(
+            context: Context,
+            app: App,
+            selected: Boolean,
+        ) {
+            viewModelScope.launch {
+                with(SelectedApp(app.packageName, app.activityName)) {
+                    if (selected) {
+                        appsRepository.addSelectedApp(this)
+                    } else {
+                        appsRepository.removeSelectedApp(this)
+                    }
+                }
+                FavoriteAppWidget().updateAll(context)
+            }
         }
     }
-}
