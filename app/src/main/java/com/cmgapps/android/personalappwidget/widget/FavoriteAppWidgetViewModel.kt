@@ -6,14 +6,13 @@
 
 package com.cmgapps.android.personalappwidget.widget
 
-import androidx.annotation.WorkerThread
 import com.cmgapps.android.personalappwidget.repository.AppsRepository
 import javax.inject.Inject
 
-class FavoriteAppWidgetViewModel @Inject constructor(
-    private val appsRepository: AppsRepository,
-) {
-
-    @WorkerThread
-    fun getFavoriteApps() = appsRepository.getFavoriteApps()
-}
+class FavoriteAppWidgetViewModel
+    @Inject
+    constructor(
+        private val appsRepository: AppsRepository,
+    ) {
+        suspend fun getFavoriteApps() = appsRepository.getFavoriteApps()
+    }

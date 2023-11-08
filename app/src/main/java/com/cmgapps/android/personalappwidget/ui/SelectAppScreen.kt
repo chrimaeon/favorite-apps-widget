@@ -50,6 +50,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.cmgapps.android.personalappwidget.infra.db.SelectedApp
 import com.cmgapps.android.personalappwidget.model.App
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -98,31 +99,33 @@ fun SelectAppScreen(
 private fun Item(
     app: App,
     icon: ImageBitmap?,
-    iconSize: Dp = DefaultIconSize,
     selected: Boolean,
+    iconSize: Dp = DefaultIconSize,
     onSelectionChange: (Boolean) -> Unit,
 ) {
     CompositionLocalProvider(
         LocalContentColor provides MaterialTheme.colorScheme.onSurface,
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .toggleable(
-                    value = selected,
-                    onValueChange = onSelectionChange,
-                )
-                .background(MaterialTheme.colorScheme.surface),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .toggleable(
+                        value = selected,
+                        onValueChange = onSelectionChange,
+                    )
+                    .background(MaterialTheme.colorScheme.surface),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Spacer(Modifier.width(8.dp))
             if (icon == null) {
                 Box(
-                    modifier = Modifier
-                        .size(iconSize)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.background),
+                    modifier =
+                        Modifier
+                            .size(iconSize)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.background),
                 )
             } else {
                 Image(
@@ -162,11 +165,13 @@ private fun loadIcon(
     packageManager: PackageManager,
     info: ResolveInfo,
     @Px imageSize: Int,
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ): State<ImageBitmap?> {
     return produceState<ImageBitmap?>(null, info, imageSize) {
-        value = withContext(Dispatchers.IO) {
-            info.loadIcon(packageManager)
-                .toBitmap(width = imageSize, height = imageSize).asImageBitmap()
-        }
+        value =
+            withContext(dispatcher) {
+                info.loadIcon(packageManager)
+                    .toBitmap(width = imageSize, height = imageSize).asImageBitmap()
+            }
     }
 }

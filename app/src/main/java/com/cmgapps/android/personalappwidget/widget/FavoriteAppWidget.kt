@@ -10,7 +10,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.pm.ResolveInfo
 import android.os.Build
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.glance.ColorFilter
@@ -43,10 +42,7 @@ import com.cmgapps.android.personalappwidget.ui.SelectAppActivity
 import dagger.hilt.EntryPoint
 import dagger.hilt.EntryPoints
 import dagger.hilt.InstallIn
-import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class FavoriteAppWidget : GlanceAppWidget() {
     override suspend fun provideGlance(
@@ -64,10 +60,7 @@ class FavoriteAppWidget : GlanceAppWidget() {
         val resources = appContext.resources
         val iconSize = resources.getDimensionPixelSize(R.dimen.icon_size)
 
-        val favApps =
-            withContext(Dispatchers.IO) {
-                viewModel.getFavoriteApps()
-            }
+        val favApps = viewModel.getFavoriteApps()
 
         provideContent {
             WidgetTheme {
@@ -149,17 +142,14 @@ data class FavoriteApp(
     val resolveInfo: ResolveInfo,
 )
 
-@AndroidEntryPoint
 class FavoriteAppWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget
         get() = FavoriteAppWidget()
 }
 
-@Composable
-private fun GlanceModifier.appWidgetBackgroundRadius(): GlanceModifier {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        this.cornerRadius(android.R.dimen.system_app_widget_background_radius)
+private fun GlanceModifier.appWidgetBackgroundRadius(): GlanceModifier =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        this then cornerRadius(android.R.dimen.system_app_widget_background_radius)
     } else {
-        this.cornerRadius(16.dp)
+        this then cornerRadius(16.dp)
     }
-}

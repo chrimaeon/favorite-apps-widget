@@ -26,46 +26,50 @@ private val deepPurple40 = Color(0xff7e57c2)
 private val deepPurple90 = Color(0xff311b92)
 private val deepPurple80 = Color(0xff4527a0)
 
-val DarkColors = darkColorScheme(
-    primary = amber80,
-    onPrimary = Color.Black,
-    primaryContainer = amber30,
-    onPrimaryContainer = Color.Black,
-    inversePrimary = amber40,
-    secondary = deepPurple80,
-    onSecondary = Color.White,
-    secondaryContainer = deepPurple30,
-    onSecondaryContainer = Color.Black,
-)
+val DarkColors =
+    darkColorScheme(
+        primary = amber80,
+        onPrimary = Color.Black,
+        primaryContainer = amber30,
+        onPrimaryContainer = Color.Black,
+        inversePrimary = amber40,
+        secondary = deepPurple80,
+        onSecondary = Color.White,
+        secondaryContainer = deepPurple30,
+        onSecondaryContainer = Color.Black,
+    )
 
-val LightColors = lightColorScheme(
-    primary = amber40,
-    onPrimary = Color.Black,
-    primaryContainer = amber90,
-    onPrimaryContainer = Color.Black,
-    inversePrimary = amber80,
-    secondary = deepPurple40,
-    onSecondary = Color.White,
-    secondaryContainer = deepPurple90,
-    onSecondaryContainer = Color.White,
-)
+val LightColors =
+    lightColorScheme(
+        primary = amber40,
+        onPrimary = Color.Black,
+        primaryContainer = amber90,
+        onPrimaryContainer = Color.Black,
+        inversePrimary = amber80,
+        secondary = deepPurple40,
+        onSecondary = Color.White,
+        secondaryContainer = deepPurple90,
+        onSecondaryContainer = Color.White,
+    )
 
 @Composable
 fun Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    val lightColorScheme = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        dynamicLightColorScheme(LocalContext.current)
-    } else {
-        LightColors
-    }
+    val lightColorScheme =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            dynamicLightColorScheme(LocalContext.current)
+        } else {
+            LightColors
+        }
 
-    val darkColorScheme = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        dynamicDarkColorScheme(LocalContext.current)
-    } else {
-        DarkColors
-    }
+    val darkColorScheme =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            dynamicDarkColorScheme(LocalContext.current)
+        } else {
+            DarkColors
+        }
 
     MaterialTheme(
         colorScheme = if (darkTheme) darkColorScheme else lightColorScheme,

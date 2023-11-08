@@ -21,7 +21,7 @@ interface AppDao {
     fun getAll(): Flow<List<SelectedApp>>
 
     @Query("SELECT * from selected_app")
-    fun getFavoriteApps(): List<SelectedApp>
+    suspend fun getFavoriteApps(): List<SelectedApp>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(selectedApp: SelectedApp)
