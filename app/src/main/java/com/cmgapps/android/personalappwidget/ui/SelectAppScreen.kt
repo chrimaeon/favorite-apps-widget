@@ -114,8 +114,7 @@ private fun Item(
                     .toggleable(
                         value = selected,
                         onValueChange = onSelectionChange,
-                    )
-                    .background(MaterialTheme.colorScheme.surface),
+                    ).background(MaterialTheme.colorScheme.surface),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Spacer(Modifier.width(8.dp))
@@ -166,12 +165,13 @@ private fun loadIcon(
     info: ResolveInfo,
     @Px imageSize: Int,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
-): State<ImageBitmap?> {
-    return produceState<ImageBitmap?>(null, info, imageSize) {
+): State<ImageBitmap?> =
+    produceState<ImageBitmap?>(null, info, imageSize) {
         value =
             withContext(dispatcher) {
-                info.loadIcon(packageManager)
-                    .toBitmap(width = imageSize, height = imageSize).asImageBitmap()
+                info
+                    .loadIcon(packageManager)
+                    .toBitmap(width = imageSize, height = imageSize)
+                    .asImageBitmap()
             }
     }
-}

@@ -8,11 +8,28 @@ if git commit -v --dry-run | grep 'STOPSHIP' >/dev/null 2>&1; then
   exit 1
 fi
 
+SCRIPT_PATH=$(realpath "$0")
+BASE_DIR=$(dirname "$SCRIPT_PATH")
+
 FILES=$(git diff --cached --name-only | grep -i -E "\.kts?" || true)
 
 if [ -n "$FILES" ]
 then
-    ktlint -F -R ./scripts/ktlint-compose-0.3.3-all.jar $FILES
+    KTLINT_COMPOSE_VERSION=$(sed -n "s/^ktlint-compose = \"\([^\"]*\)\"/\1/p" $BASE_DIR/../gradle/libs.versions.toml)
+    KTLINT_COMPOSE_LIB_PATH="$BASE_DIR/ktlint-compose-$KTLINT_COMPOSE_VERSION-all.jar"
+
+    if [ -f "$KTLINT_COMPOSE_LIB_PATH" ]
+    then
+        KTLINT_COMPOSE="-R $KTLINT_COMPOSE_LIB_PATH"
+    else
+        >&2 echo "$KTLINT_COMPOSE_LIB_PATH not found"
+        exit 1
+    fi
+
+    # shellcheck disable=SC2086
+    ktlint -F $KTLINT_COMPOSE  $FILES
+
+    # shellcheck disable=SC2086
     git add $FILES
 else
     echo "No file for ktlint"

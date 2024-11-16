@@ -8,3 +8,4 @@ local.properties
 !.idea/icon*.png
 .DS_Store
 build/
+scripts/ktlint-compose-*.jar

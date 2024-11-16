@@ -7,7 +7,7 @@
 plugins {
     id("com.android.application")
     alias(libs.plugins.kotlin.android)
-    kotlin("kapt")
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     id("com.cmgapps.gradle.ktlint")
@@ -15,13 +15,13 @@ plugins {
 
 android {
     namespace = "com.cmgapps.android.personalappwidget"
-    compileSdk = 34
-    buildToolsVersion = "34.0.0"
+    compileSdk = 35
+    buildToolsVersion = "35.0.0"
 
     defaultConfig {
         applicationId = "com.cmgapps.android.personalappwidget"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0.0"
     }
@@ -29,10 +29,6 @@ android {
     buildFeatures {
         buildConfig = true
         compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
 
     val debugSigningConfig by signingConfigs.named("debug") {
@@ -46,7 +42,7 @@ android {
         }
 
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
         }
     }
 
@@ -57,7 +53,7 @@ android {
 }
 
 kotlin {
-    // jvmToolchain(17)
+    jvmToolchain(17)
 }
 
 ksp {
@@ -77,5 +73,5 @@ dependencies {
     ksp(libs.room.compiler)
 
     implementation(libs.bundles.hilt)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 }

@@ -51,10 +51,11 @@ class FavoriteAppWidget : GlanceAppWidget() {
     ) {
         val appContext = context.applicationContext
         val viewModel =
-            EntryPoints.get(
-                appContext,
-                FavoriteAppWidgetEntryPoint::class.java,
-            ).getViewModel()
+            EntryPoints
+                .get(
+                    appContext,
+                    FavoriteAppWidgetEntryPoint::class.java,
+                ).getViewModel()
 
         val packageManager = appContext.packageManager
         val resources = appContext.resources
@@ -67,7 +68,8 @@ class FavoriteAppWidget : GlanceAppWidget() {
                 val textColor = GlanceTheme.colors.onBackground
                 Column(
                     modifier =
-                        GlanceModifier.background(GlanceTheme.colors.background)
+                        GlanceModifier
+                            .background(GlanceTheme.colors.background)
                             .appWidgetBackground()
                             .appWidgetBackgroundRadius()
                             .padding(16.dp),
@@ -105,7 +107,8 @@ class FavoriteAppWidget : GlanceAppWidget() {
                             Image(
                                 provider =
                                     ImageProvider(
-                                        favoriteApp.resolveInfo.loadIcon(packageManager)
+                                        favoriteApp.resolveInfo
+                                            .loadIcon(packageManager)
                                             .toBitmap(iconSize, iconSize),
                                     ),
                                 contentDescription = null,

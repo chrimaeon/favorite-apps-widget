@@ -8,7 +8,6 @@
 
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import com.github.benmanes.gradle.versions.updates.gradle.GradleReleaseChannel.CURRENT
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(libs.plugins.android.application) apply false
@@ -18,23 +17,8 @@ plugins {
     alias(libs.plugins.benManesVersionsGradle)
 }
 
-allprojects {
-    tasks {
-        withType<JavaCompile> {
-            options.compilerArgs.addAll(listOf("-Xlint:deprecation", "-Xmaxerrs", "500"))
-        }
-
-        withType<KotlinCompile> {
-            kotlinOptions {
-                jvmTarget = JavaVersion.VERSION_17.toString()
-                freeCompilerArgs = freeCompilerArgs + listOf("-opt-in=kotlin.RequiresOptIn")
-            }
-        }
-    }
-}
-
 tasks {
-    register("clean", Delete::class) {
+    register<Delete>("clean") {
         delete(rootProject.layout.buildDirectory)
     }
 
@@ -47,7 +31,8 @@ tasks {
         revision = "release"
         rejectVersionIf {
             listOf("alpha", "beta", "rc", "cr", "m", "eap", "dev").any { qualifier ->
-                """(?i).*[.-]?$qualifier[.\d-]*""".toRegex()
+                """(?i).*[.-]?$qualifier[.\d-]*"""
+                    .toRegex()
                     .containsMatchIn(candidate.version)
             }
         }
