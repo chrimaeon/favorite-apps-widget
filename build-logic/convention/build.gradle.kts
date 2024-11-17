@@ -10,7 +10,6 @@ plugins {
 
 group = "com.cmgapps.gradle.personalappwidget.buildlogic"
 
-// kotlin {
-//     jvmToolchain {
-//     }
-// }
+kotlin {
+    jvmToolchain(17)
+}
