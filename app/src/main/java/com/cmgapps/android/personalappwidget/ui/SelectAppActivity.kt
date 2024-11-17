@@ -10,6 +10,8 @@ package com.cmgapps.android.personalappwidget.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
@@ -21,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.glance.appwidget.updateAll
 import com.cmgapps.android.personalappwidget.R
@@ -31,6 +34,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class SelectAppActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
             Theme {
@@ -59,9 +63,15 @@ class SelectAppActivity : ComponentActivity() {
                             },
                         )
                     },
-                ) {
+                ) { contentPadding ->
+                    val layoutDirection = LocalLayoutDirection.current
                     SelectAppScreen(
-                        modifier = Modifier.padding(it),
+                        modifier =
+                            Modifier.padding(
+                                top = contentPadding.calculateTopPadding(),
+                                start = contentPadding.calculateStartPadding(layoutDirection),
+                                end = contentPadding.calculateStartPadding(layoutDirection),
+                            ),
                     )
                 }
             }
