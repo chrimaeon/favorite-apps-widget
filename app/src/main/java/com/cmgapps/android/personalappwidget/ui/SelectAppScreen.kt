@@ -6,6 +6,7 @@
 
 package com.cmgapps.android.personalappwidget.ui
 
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import androidx.annotation.Px
@@ -120,6 +121,7 @@ fun SelectAppScreen(
 }
 
 @Composable
+@SuppressLint("ProduceStateDoesNotAssignValue")
 private fun loadIcon(
     packageManager: PackageManager,
     info: ResolveInfo,
@@ -134,4 +136,6 @@ private fun loadIcon(
                     .toBitmap(width = imageSize, height = imageSize)
                     .asImageBitmap()
             }
+
+        // awaitDispose {}
     }
