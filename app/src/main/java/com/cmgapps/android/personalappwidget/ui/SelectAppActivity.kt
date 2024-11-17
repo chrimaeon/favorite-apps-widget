@@ -31,6 +31,7 @@ import com.cmgapps.android.personalappwidget.widget.FavoriteAppWidget
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
 class SelectAppActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
