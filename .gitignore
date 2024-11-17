@@ -9,3 +9,4 @@ local.properties
 .DS_Store
 build/
 scripts/ktlint-compose-*.jar
+.kotlin/

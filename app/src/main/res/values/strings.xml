@@ -11,7 +11,7 @@
     <string name="app_name">Favorite Apps Widget</string>
     <string name="title_select_app_title">Select Apps</string>
     <string name="refresh_widget">Refresh Widget</string>
-    <string name="widget_loading">Loading …</string>
-    <string name="add_app">Add App</string>
+    <string name="widget_loading">Loading \u2026</string>
+    <string name="edit_app">Change Apps</string>
 
 </resources>

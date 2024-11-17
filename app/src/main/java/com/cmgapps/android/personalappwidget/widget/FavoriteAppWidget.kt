@@ -10,6 +10,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.pm.ResolveInfo
 import android.os.Build
+import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.glance.ColorFilter
@@ -24,6 +25,8 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.appWidgetBackground
 import androidx.glance.appwidget.cornerRadius
+import androidx.glance.appwidget.lazy.LazyColumn
+import androidx.glance.appwidget.lazy.itemsIndexed
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
@@ -79,8 +82,8 @@ class FavoriteAppWidget : GlanceAppWidget() {
                         contentAlignment = Alignment.CenterEnd,
                     ) {
                         Image(
-                            provider = ImageProvider(R.drawable.ic_add_24),
-                            contentDescription = resources.getString(R.string.add_app),
+                            provider = ImageProvider(R.drawable.ic_edit_24),
+                            contentDescription = resources.getString(R.string.edit_app),
                             colorFilter = ColorFilter.tint(textColor),
                             modifier =
                                 GlanceModifier
@@ -88,43 +91,52 @@ class FavoriteAppWidget : GlanceAppWidget() {
                         )
                     }
                     Spacer(GlanceModifier.height(2.dp))
-                    val lastIndex = favApps.lastIndex
-                    favApps.forEachIndexed { index, favoriteApp ->
-                        Row(
-                            modifier =
-                                GlanceModifier
-                                    .fillMaxWidth()
-                                    .clickable(
-                                        actionStartActivity(
-                                            ComponentName(
-                                                favoriteApp.packageName,
-                                                favoriteApp.activityName,
+
+                    val lastIndex = remember(favApps) { favApps.lastIndex }
+
+                    LazyColumn {
+                        itemsIndexed(
+                            items = favApps,
+                            itemId = { _, app -> app.id },
+                        ) { index, favoriteApp ->
+                            Column {
+                                Row(
+                                    modifier =
+                                        GlanceModifier
+                                            .fillMaxWidth()
+                                            .clickable(
+                                                actionStartActivity(
+                                                    ComponentName(
+                                                        favoriteApp.packageName,
+                                                        favoriteApp.activityName,
+                                                    ),
+                                                ),
                                             ),
-                                        ),
-                                    ),
-                            verticalAlignment = Alignment.Vertical.CenterVertically,
-                        ) {
-                            Image(
-                                provider =
-                                    ImageProvider(
-                                        favoriteApp.resolveInfo
-                                            .loadIcon(packageManager)
-                                            .toBitmap(iconSize, iconSize),
-                                    ),
-                                contentDescription = null,
-                            )
-                            Spacer(GlanceModifier.width(8.dp))
-                            Text(
-                                favoriteApp.resolveInfo.loadLabel(packageManager).toString(),
-                                style =
-                                    TextStyle(
-                                        color = textColor,
-                                    ),
-                                maxLines = 2,
-                            )
-                        }
-                        if (index != lastIndex) {
-                            Spacer(GlanceModifier.height(8.dp))
+                                    verticalAlignment = Alignment.Vertical.CenterVertically,
+                                ) {
+                                    Image(
+                                        provider =
+                                            ImageProvider(
+                                                favoriteApp.resolveInfo
+                                                    .loadIcon(packageManager)
+                                                    .toBitmap(iconSize, iconSize),
+                                            ),
+                                        contentDescription = null,
+                                    )
+                                    Spacer(GlanceModifier.width(8.dp))
+                                    Text(
+                                        favoriteApp.resolveInfo.loadLabel(packageManager).toString(),
+                                        style =
+                                            TextStyle(
+                                                color = textColor,
+                                            ),
+                                        maxLines = 2,
+                                    )
+                                }
+                                if (index != lastIndex) {
+                                    Spacer(GlanceModifier.height(8.dp))
+                                }
+                            }
                         }
                     }
                 }
@@ -143,7 +155,9 @@ data class FavoriteApp(
     val packageName: String,
     val activityName: String,
     val resolveInfo: ResolveInfo,
-)
+) {
+    val id: Long = "$packageName$activityName".hashCode().toLong()
+}
 
 class FavoriteAppWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget
